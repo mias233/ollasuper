@@ -1,0 +1,84 @@
+{# Phase 17.8 · Warm editorial catalog gallery.
+   Same template serves /agents and /experts (the controller decides which
+   set to feed via the `cards` ctx var + `active` slot).
+
+   Faithfully ports the design's Agents gallery card spec while keeping
+   every existing testid + the /chat?expert={slug} click contract.
+#}
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% import "partials/primitives.html.tera" as p %}
+{% block title %}{{ title }} — OllaSuper{% endblock %}
+
+{% block app_content %}
+<div style="height: 100%; overflow-y: auto;">
+  <div style="max-width: 1080px; margin: 0 auto; padding: 40px 44px 80px;">
+
+    {# ── Title row ── #}
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px;">
+      <div>
+        <h1 class="serif" data-testid="catalog-title"
+            style="font-size: 32px; font-weight: 500; margin: 0;
+                   letter-spacing: -.015em; color: var(--ink);">{{ title }}</h1>
+        <p style="font-size: 15px; color: var(--muted); margin-top: 8px;">{{ subtitle }}</p>
+      </div>
+      <a href="/agents" onclick="event.preventDefault();document.dispatchEvent(new CustomEvent('modal:open',{detail:{id:'new-agent-modal'}}));"
+         style="display: inline-flex; align-items: center; gap: 8px;
+                padding: 11px 17px; border-radius: 11px;
+                background: var(--ink); color: #fff;
+                font-size: 14px; font-weight: 600; box-shadow: var(--sh-sm);
+                text-decoration: none;">
+        {{ p::icon(name="plus", size=16) }} Build a new Agent
+      </a>
+    </div>
+
+    {# ── Card grid ── #}
+    <div data-testid="catalog-grid"
+         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+      {% for card in cards %}
+        <a href="/chat?expert={{ card.slug }}"
+           data-testid="catalog-card-{{ card.slug }}"
+           class="agent-card fade-up"
+           style="text-align: left; background: var(--surface);
+                  border: 1px solid var(--line); border-radius: 16px;
+                  padding: 20px; text-decoration: none; color: inherit;
+                  display: block;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <span aria-hidden="true" style="display: inline-grid; place-items: center;
+                  width: 42px; height: 42px; flex: none;
+                  border-radius: 12px;
+                  background: var(--clay-soft); border: 1px solid var(--line);
+                  color: var(--clay); font-family: var(--display); font-size: 21px;">◓</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;
+                         font-size: 11.5px; color: var(--muted);">
+              <span class="live-dot"></span> Active
+            </span>
+          </div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+                      display: flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; border-radius: 99px; background: {{ card.color }};"></span>
+            {{ card.name }}
+          </div>
+          <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0 0 16px; min-height: 40px;">{{ card.oneliner }}</p>
+
+          {% if card.starter_title %}
+            <div style="display: flex; align-items: center; justify-content: space-between;
+                        padding-top: 14px; border-top: 1px solid var(--line);">
+              <span class="uppercase-label">try</span>
+              <span class="mono" style="font-size: 11px; color: var(--muted);
+                                         max-width: 70%; text-align: right;
+                                         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ card.starter_title }}</span>
+            </div>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+
+    {% if cards | length == 0 %}
+      <div style="padding: 60px 0; text-align: center; color: var(--muted); font-size: 14px;">
+        No {{ title | lower }} yet.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

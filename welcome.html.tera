@@ -1,0 +1,36 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% block title %}OllaSuper — dashboard{% endblock %}
+
+{% block app_content %}
+  <div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 28px;">
+    <div>
+      <div class="qw-eyebrow qw-eyebrow-accent" style="margin-bottom: 10px;">· FOUNDATION READY</div>
+      <h1 style="font-size: 42px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05;" data-testid="dashboard-title">
+        Morning, {{ user.name }}.
+        <br>
+        <span style="color: var(--ink-3);">Phase 1 is live.</span>
+      </h1>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="qw-btn qw-btn-outline qw-btn-sm">{{ m::icon(name="folder", size=13) }} New project</button>
+      <button class="qw-btn qw-btn-primary qw-btn-sm">{{ m::icon(name="sparkle", size=13) }} New document</button>
+    </div>
+  </div>
+
+  <div class="qw-card" style="padding: 28px;">
+    <div class="qw-eyebrow">STACK CHECK · PHASE 1</div>
+    <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-top: 8px;">Auth + AppShell wired.</h2>
+    <p style="color: var(--ink-3); margin-top: 8px;">
+      You're logged in as <strong>{{ user.email }}</strong>. Click <strong>Sign out</strong>
+      in the sidebar to test the logout flow.
+    </p>
+
+    <ul class="qw-mono" style="font-size: 13px; color: var(--ink-2); margin-top: 16px; list-style: none; padding: 0;">
+      <li>● Form-encoded login/register/logout</li>
+      <li>● HttpOnly cookie with HS512 JWT</li>
+      <li>● CookieAuth extractor: HTML → 303 /auth · JSON → 401</li>
+      <li>● Stimulus controllers loaded (sidebar nav uses Turbo Drive)</li>
+    </ul>
+  </div>
+{% endblock %}

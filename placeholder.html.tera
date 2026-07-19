@@ -1,0 +1,13 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% block title %}{{ active }} · OllaSuper{% endblock %}
+
+{% block app_content %}
+<div style="padding: 80px 16px; text-align: center;">
+  <div class="qw-eyebrow qw-eyebrow-accent">{{ active | upper }}</div>
+  <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-top: 12px;">Coming up next.</h1>
+  <p style="color: var(--ink-3); margin-top: 12px; max-width: 460px; margin-left: auto; margin-right: auto;">
+    This screen is on the build list. For now, head back to the
+    <a href="/" style="border-bottom: 1px solid var(--ink-3); color: var(--ink);">dashboard</a>.
+  </p>
+</div>
+{% endblock %}

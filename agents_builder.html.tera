@@ -1,0 +1,126 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% block title %}OllaSuper — Builder{% endblock %}
+
+{% block app_content %}
+<div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px;">
+  <div>
+    <div class="qw-eyebrow qw-eyebrow-accent">· {{ workspace.name | upper }}</div>
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px;">
+      Builder
+      <span style="color: var(--ink-3); font-weight: 500;">&middot; tools available to your agents</span>
+    </h1>
+  </div>
+</div>
+
+{# ── Flash from OAuth round-trip ─────────────────────────────────────── #}
+{% if flash %}
+  {% if flash.kind == "success" %}
+    <div class="qw-card" style="padding: 14px 16px; margin-bottom: 22px; border-left: 3px solid var(--accent); background: var(--surface);">
+      <strong>Connected {{ flash.piece }}.</strong>
+      <span style="color: var(--ink-3);">It's ready to use in any agent that lists {{ flash.piece }} as a tool.</span>
+    </div>
+  {% else %}
+    <div class="qw-card" style="padding: 14px 16px; margin-bottom: 22px; border-left: 3px solid #c2542f; background: var(--surface);">
+      <strong>OAuth failed for {{ flash.piece }}.</strong>
+      <span style="color: var(--ink-3);">
+        Reason: <code class="qw-mono">{{ flash.code | default(value="unknown") }}</code>{% if flash.detail %} &mdash; {{ flash.detail }}{% endif %}.
+      </span>
+    </div>
+  {% endif %}
+{% endif %}
+
+{# ── 1. Connect SaaS pieces ───────────────────────────────────────────── #}
+<section style="margin-bottom: 36px;">
+  <div class="qw-eyebrow" style="margin-bottom: 12px;">1 · Connect a SaaS</div>
+  <p style="color: var(--ink-3); margin-bottom: 14px; max-width: 620px;">
+    OllaSuper hosts the OAuth handshake on its own domain. The token never leaves
+    Activepieces&apos; encrypted storage; you can revoke any time from this page.
+  </p>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+    {% for p in pieces %}
+      <div class="qw-card" style="padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-weight: 600; font-size: 16px;">{{ p.display_name }}</div>
+        <div style="color: var(--ink-3); font-size: 13px; flex: 1;">
+          {% if p.is_connected %}
+            Already connected. Reconnect if scopes changed.
+          {% else %}
+            Authorize once — used by any agent that lists {{ p.display_name }} as a tool.
+          {% endif %}
+        </div>
+        <a href="/oauth/{{ p.slug }}/start"
+           class="qw-btn qw-btn-{% if p.is_connected %}secondary{% else %}primary{% endif %} qw-btn-sm"
+           style="background-color: #333 !important; color: #fff !important; border: 1px solid #555 !important;"
+           data-testid="connect-{{ p.slug }}-btn"
+           data-turbo="false">
+          {% if p.is_connected %}Reconnect{% else %}Connect {{ p.display_name }}{% endif %}
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# ── 2. Current connections ──────────────────────────────────────────── #}
+<section style="margin-bottom: 36px;">
+  <div class="qw-eyebrow" style="margin-bottom: 12px;">2 · Your connections &middot; {{ connections | length }}</div>
+  {% if connections | length == 0 %}
+    <div class="qw-card" style="padding: 24px; color: var(--ink-3); text-align: center;">
+      No connections yet. Click any tile above to authorize one.
+    </div>
+  {% else %}
+    <div class="qw-card" style="padding: 0;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: var(--surface); color: var(--ink-3); font-size: 12px; text-align: left;">
+            <th style="padding: 10px 14px; font-weight: 600;">Piece</th>
+            <th style="padding: 10px 14px; font-weight: 600;">Label</th>
+            <th style="padding: 10px 14px; font-weight: 600;">AP connection</th>
+            <th style="padding: 10px 14px; font-weight: 600;">Connected</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in connections %}
+            <tr style="border-top: 1px solid var(--line);">
+              <td style="padding: 12px 14px; font-weight: 600;">{{ c.piece }}</td>
+              <td style="padding: 12px 14px; color: var(--ink-2);">{{ c.display_name }}</td>
+              <td style="padding: 12px 14px;"><code class="qw-mono" style="font-size: 12px;">{{ c.ap_connection_id }}</code></td>
+              <td style="padding: 12px 14px; color: var(--ink-3); font-size: 13px;">{{ c.created_at }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</section>
+
+{# ── 3. Tool catalog ──────────────────────────────────────────────────── #}
+<section>
+  <div class="qw-eyebrow" style="margin-bottom: 12px;">3 · Tool catalog &middot; {% set total = 0 %}{% for b in backends %}{% set_global total = total + b.tools | length %}{% endfor %}{{ total }} tools across {{ backends | length }} backends</div>
+  <p style="color: var(--ink-3); margin-bottom: 18px; max-width: 620px;">
+    Every tool below is callable from any agent's system prompt via its slug
+    (e.g. <code class="qw-mono">ollagraph.aeo_page_audit</code>). MCP-server tools
+    appear once the relevant server is connected.
+  </p>
+
+  {% for b in backends %}
+    <div style="margin-bottom: 28px;">
+      <div style="font-weight: 600; font-size: 15px; margin-bottom: 10px;">{{ b.label }} &middot;
+        <span style="color: var(--ink-3); font-weight: 500;">{{ b.tools | length }} tool{% if b.tools | length != 1 %}s{% endif %}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+        {% for t in b.tools %}
+          <div class="qw-card" style="padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+              <code class="qw-mono" style="font-size: 12.5px; font-weight: 600;">{{ t.slug }}</code>
+              <span style="font-size: 11px; color: var(--ink-3); white-space: nowrap;">
+                approval: {{ t.approval_default }}
+              </span>
+            </div>
+            <div style="font-size: 13px; color: var(--ink-3); margin-top: 6px; line-height: 1.4;">{{ t.description }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+{% endblock %}

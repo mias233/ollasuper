@@ -1,0 +1,360 @@
+{# Phase 17.4 · Warm editorial dashboard / Home.
+
+   Two-column 1180px layout: main composer + right rail (CreditMeter +
+   Agents + Sources cards). The shell's default right rail is hidden via
+   `hide_right_rail`; the dashboard renders its own inside app_content.
+
+   All existing data hooks + testids preserved from Phase 15/16:
+     • dashboard-title, home-prompt, home-source-toggle, home-model,
+       home-generate, dashboard-quick-{slug}, dashboard-see-all-palette
+     • Credits-exhausted banner (Phase 16.3) — repainted in clay/amber
+     • Recent-work list (real `recent` ctx var, not the mock RECENT_WORK)
+#}
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% import "partials/primitives.html.tera" as p %}
+{% set active = "Home" %}
+{% block title %}OllaSuper · Home{% endblock %}
+
+{# Phase 31.11B · the rail comes back — different shape, fixed scope.
+   Renders the experts_rail partial which lists 6 Agents (top) + 80
+   Experts grouped by department with native <details> collapse + a
+   sticky search filter (Stimulus controller persists open/closed). #}
+{% block right_rail %}
+  {% include "partials/experts_rail.html.tera" %}
+{% endblock %}
+
+{% block app_content %}
+{# Phase 19.1 · Mimo single-column dashboard. The 320px right rail
+   (CreditMeter / Agents card / Sources card) was deleted — credits live
+   in the topbar chip, Agents in the topbar dropdown, Sources in the
+   composer + button.
+   Phase 23 · max-width replaced by data-content-shell so dashboard
+   scales with viewport (clamp 720..1100). #}
+<div style="height: 100%; overflow-y: auto;">
+  <div data-content-shell style="padding: 56px 32px 96px; display: block;">
+
+    {# ────────────── MAIN COLUMN ────────────── #}
+    <div style="min-width: 0;">
+
+      {# Phase 33.6 follow-up · persona nudge. Shown to users with NULL
+         preferred_persona who haven't dismissed it yet (Stimulus checks
+         localStorage on connect). Above credits banner because picking
+         a persona only takes 5 sec and improves the rail immediately;
+         credits-exhausted is more urgent only when both are visible. #}
+      {% if show_persona_nudge %}
+        <div data-controller="persona-nudge"
+             data-testid="persona-nudge-banner"
+             style="margin-bottom: 16px; padding: 12px 16px;
+                    background: var(--surface); border: 1px solid var(--line);
+                    border-left: 3px solid var(--accent); border-radius: 10px;
+                    display: flex; align-items: center; gap: 14px;">
+          <span style="font-size: 18px; line-height: 1;">★</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 13.5px; font-weight: 600; color: var(--ink);">
+              Pick your role to surface the 8 Experts most useful to you.
+            </div>
+            <div style="font-size: 12.5px; color: var(--ink-3); margin-top: 2px;">
+              Default shows all 86. Change anytime in Settings.
+            </div>
+          </div>
+          <a href="/settings?tab=profile" data-testid="persona-nudge-cta"
+             style="white-space: nowrap; padding: 7px 14px;
+                    background: var(--ink); color: var(--paper);
+                    font-size: 12.5px; font-weight: 600; border-radius: 8px;
+                    text-decoration: none;">
+            Pick role →
+          </a>
+          <button type="button" data-testid="persona-nudge-dismiss"
+                  data-action="click->persona-nudge#dismiss"
+                  title="Dismiss"
+                  style="background: transparent; border: 0; padding: 4px 8px;
+                         color: var(--ink-3); font-size: 16px; line-height: 1;
+                         cursor: pointer; font-family: inherit;">×</button>
+        </div>
+      {% endif %}
+
+      {# Credits-exhausted banner (Phase 16.3 logic, Phase 17 paint) #}
+      {% if usage and usage.effective_limit and usage.used >= usage.effective_limit %}
+        {% set _plan_lower = (usage.plan | default(value="free")) %}
+        <div data-testid="credits-exhausted-banner" class="fade-up"
+             style="margin-bottom: 22px; padding: 14px 18px;
+                    background: var(--amber-soft); border: 1px solid var(--amber);
+                    border-radius: var(--r-md); display: flex; align-items: center; gap: 14px;">
+          <span style="font-size: 22px;">⚡</span>
+          <div style="flex: 1;">
+            <div style="font-size: 14px; font-weight: 600; color: var(--ink);">You're out of credits this month.</div>
+            <div style="font-size: 12.5px; color: var(--ink-2); margin-top: 2px;">
+              {{ usage.used }} / {{ usage.effective_limit }} credits used.
+              {% if _plan_lower == "free" %}
+                Upgrade to Pro for 1,000,000 credits — or top up 100K for ₹99 to unblock right now.
+              {% else %}
+                Top up 100K for ₹99 to keep going, or upgrade plan tier.
+              {% endif %}
+            </div>
+          </div>
+          {% if _plan_lower == "free" %}
+            <a href="/billing" data-testid="banner-upgrade" class="qw-btn qw-btn-primary qw-btn-sm" style="white-space: nowrap;">Upgrade →</a>
+            <a href="/billing/topup" data-testid="topup-100k-cta"
+               style="white-space: nowrap; padding: 8px 14px; background: var(--surface); border: 1px solid var(--amber); color: var(--ink); border-radius: 8px; font-size: 12.5px; font-weight: 600; text-decoration: none;">
+              +100K · ₹99
+            </a>
+          {% else %}
+            <a href="/billing/topup" data-testid="topup-100k-cta" class="qw-btn qw-btn-primary qw-btn-sm" style="white-space: nowrap;">+100K · ₹99</a>
+            <a href="/billing" data-testid="banner-upgrade"
+               style="white-space: nowrap; padding: 8px 14px; background: var(--surface); border: 1px solid var(--amber); color: var(--ink); border-radius: 8px; font-size: 12.5px; font-weight: 600; text-decoration: none;">
+              Upgrade →
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {# ── Greeting ── (Phase 19.1 · plain sans, no serif, no clay) #}
+      <div class="fade-up">
+        <h1 data-testid="dashboard-title"
+            style="font-family: var(--sans); font-size: 28px; line-height: 1.25;
+                   font-weight: 700; letter-spacing: -0.01em;
+                   margin: 0; color: var(--ink);">
+          Ready when you are, {{ user.first_name | default(value="there") }}.
+        </h1>
+        <p style="font-size: 15.5px; color: var(--muted); margin: 10px 0 0; max-width: 560px; line-height: 1.55;">
+          Describe what you need. Pick an Expert or Agent from the topbar to route it.
+        </p>
+      </div>
+
+      {# ── Composer ── (Phase 19.1 · Mimo: + and ➤ icon-only, model from topbar) #}
+      <div class="fade-up" style="animation-delay: .05s; margin-top: 22px;">
+        <form method="post" action="/quick-generate" data-turbo="false"
+              data-controller="composer"
+              data-action="topbar:model-changed@document->composer#syncModel"
+              class="composer-shell"
+              style="background: var(--surface); border: 1px solid var(--line);
+                     border-radius: 18px; padding: 14px 16px 12px;
+                     box-shadow: none;">
+          <textarea name="prompt" data-testid="home-prompt" required autofocus
+                    data-composer-target="textarea"
+                    data-action="input->composer#autosize"
+                    placeholder="Ask me anything! Hold Shift+Enter to start a new line."
+                    rows="2"
+                    style="width: 100%; border: none; resize: none; outline: none;
+                           background: transparent; font-size: 15.5px; line-height: 1.55;
+                           color: var(--ink); min-height: 44px; display: block; padding: 0 0 6px;"></textarea>
+
+          <div style="display: flex; align-items: center; justify-content: space-between;
+                      gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              {# Plus → opens add-source modal. Source toggle preserved as hidden
+                 input when a default scan pid exists, so the existing
+                 home-source-toggle test-id is still in the DOM. #}
+              <button type="button"
+                      title="Attach a source"
+                      onclick="document.dispatchEvent(new CustomEvent('modal:open', {detail: {id: 'add-source-modal'}}))"
+                      style="display: inline-flex; align-items: center; justify-content: center;
+                             width: 30px; height: 30px; border-radius: 99px;
+                             border: 1px solid var(--line); background: var(--surface);
+                             color: var(--muted); cursor: pointer; font-family: inherit;">
+                {{ p::icon(name="plus", size=15) }}
+              </button>
+              {% if default_scan_pid %}
+                {# Phase 19.1 — hidden source toggle; persona suite still asserts
+                   on data-testid="home-source-toggle" so we keep the input
+                   present but invisible. Unchanged behavior. #}
+                <input type="checkbox" name="scan_pids" value="{{ default_scan_pid }}" checked
+                       data-testid="home-source-toggle" style="display: none;">
+              {% endif %}
+            </div>
+
+            <button type="submit" data-testid="home-generate"
+                    title="Send"
+                    style="display: inline-flex; align-items: center; justify-content: center;
+                           width: 30px; height: 30px; border-radius: 99px;
+                           background: var(--accent); color: #fff;
+                           border: 0; cursor: pointer;">
+              {{ p::icon(name="arrow", size=15) }}
+            </button>
+          </div>
+
+          {# Hidden defaults preserved for backend + test-ids #}
+          <input type="hidden" name="count" value="1" data-testid="home-count">
+          <input type="hidden" name="kind" value="blog" data-testid="home-kind">
+          <input type="hidden" name="model" data-testid="home-model"
+                 data-composer-target="modelField"
+                 value="openrouter/google/gemini-2.5-flash">
+        </form>
+      </div>
+
+      {# Phase 31.11C · "Start with an Expert" 5-chip row removed.
+         Made redundant by the new right-rail (Phase 31.11B) which shows
+         all 80 Experts grouped + searchable. The `popular_experts` ctx
+         var stays alive upstream in case a future widget needs it. #}
+
+      {# Phase 31.11A · in-center "Recent" block removed. The left sidebar's
+         RECENTS list is the canonical recents surface; duplicating it below
+         the composer was confusing. The data hook (`recent` ctx var) is
+         preserved upstream so the sidebar list keeps populating. #}
+    </div>
+
+    {# Phase 19.1 · Right rail removed.
+       CreditMeter → topbar chip; Agents → topbar Agent dropdown;
+       Sources → composer + button → /sources page.
+       The killed block continues below in a Tera-disabled `{% if false %}`
+       so the data hooks remain visible for revert. #}
+    {% if false %}
+    <aside class="fade-up" style="display: none;">
+
+      {% if usage and usage.effective_limit %}
+        {% set _used = usage.used | default(value=0) %}
+        {% set _total = usage.effective_limit %}
+        {% set _pct = usage.pct | default(value=0) %}
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="uppercase-label">Credits this month</span>
+            <span class="mono" style="font-size: 12px; color: var(--muted);">{{ _pct }}%</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 10px;">
+            <span class="mono" style="font-size: 26px; font-weight: 600; color: var(--ink); letter-spacing: -.01em;">{{ _used }}</span>
+            <span class="mono" style="font-size: 13px; color: var(--faint);">/ {{ _total }}</span>
+          </div>
+          <div style="height: 8px; border-radius: 99px; background: var(--paper-2); margin-top: 12px; overflow: hidden; display: flex;">
+            <div style="width: {{ _pct }}%; background: linear-gradient(90deg, var(--clay), #D8794E); border-radius: 99px;"></div>
+          </div>
+          <a href="/billing" class="hover-line"
+             style="margin-top: 14px; font-size: 12.5px; color: var(--clay-deep);
+                    font-weight: 600; display: inline-flex; align-items: center; gap: 5px;
+                    white-space: nowrap; text-decoration: none;">
+            Manage plan {{ p::icon(name="arrow", size=13) }}
+          </a>
+        </div>
+      {% endif %}
+
+      {# Agents card — shows up to 4 from `agents` ctx; falls back to seed list #}
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px 12px 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 6px 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--clay); display: inline-flex;">{{ p::icon(name="bolt", size=15) }}</span>
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--ink);">Agents</span>
+            {% if agents %}{{ p::pill(text=agents | length) }}{% else %}{{ p::pill(text="6") }}{% endif %}
+          </div>
+          <a href="/agents" data-turbo-action="advance" class="icon-btn-sm" style="text-decoration: none;">
+            {{ p::icon(name="arrow", size=15) }}
+          </a>
+        </div>
+        <div>
+          {% if agents %}
+            {% for a in agents | slice(end=4) %}
+              <a href="/chat?expert={{ a.id }}" data-turbo-action="advance" class="agent-row"
+                 style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px;
+                        width: 100%; text-decoration: none; color: inherit;">
+                {{ p::glyph_tile(glyph=a.glyph | default(value="◓"), color=a.color | default(value="clay"), size=36, soft=true) }}
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 13.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ a.name }}</div>
+                  <div class="mono" style="font-size: 11px; color: var(--faint); margin-top: 2px;">{{ a.runs | default(value="0") }} runs · {{ a.kind | default(value="chat") }}</div>
+                </div>
+                <span class="live-dot" style="margin-right: 4px;"></span>
+              </a>
+            {% endfor %}
+          {% else %}
+            {# seed fallback: 4 hardcoded rows when no `agents` ctx var is set #}
+            <a href="/chat?expert=hr" data-turbo-action="advance" class="agent-row"
+               style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px;
+                      width: 100%; text-decoration: none; color: inherit;">
+              {{ p::glyph_tile(glyph="◑", color="purple", size=36, soft=true) }}
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 13.5px; font-weight: 600; color: var(--ink);">HR Agent</div>
+                <div class="mono" style="font-size: 11px; color: var(--faint); margin-top: 2px;">142 runs · chat</div>
+              </div>
+              <span class="live-dot" style="margin-right: 4px;"></span>
+            </a>
+            <a href="/chat?expert=sales" data-turbo-action="advance" class="agent-row"
+               style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px;
+                      width: 100%; text-decoration: none; color: inherit;">
+              {{ p::glyph_tile(glyph="◆", color="amber", size=36, soft=true) }}
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 13.5px; font-weight: 600; color: var(--ink);">Sales Agent</div>
+                <div class="mono" style="font-size: 11px; color: var(--faint); margin-top: 2px;">318 runs · chat</div>
+              </div>
+              <span class="live-dot" style="margin-right: 4px;"></span>
+            </a>
+            <a href="/chat?expert=seo" data-turbo-action="advance" class="agent-row"
+               style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px;
+                      width: 100%; text-decoration: none; color: inherit;">
+              {{ p::glyph_tile(glyph="◈", color="green", size=36, soft=true) }}
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 13.5px; font-weight: 600; color: var(--ink);">SEO Auditor Agent</div>
+                <div class="mono" style="font-size: 11px; color: var(--faint); margin-top: 2px;">87 runs · chat</div>
+              </div>
+              <span class="live-dot" style="margin-right: 4px;"></span>
+            </a>
+            <a href="/chat?expert=engineering" data-turbo-action="advance" class="agent-row"
+               style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px;
+                      width: 100%; text-decoration: none; color: inherit;">
+              {{ p::glyph_tile(glyph="◐", color="blue", size=36, soft=true) }}
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 13.5px; font-weight: 600; color: var(--ink);">Code Reviewer</div>
+                <div class="mono" style="font-size: 11px; color: var(--faint); margin-top: 2px;">503 runs · code</div>
+              </div>
+              <span class="live-dot" style="margin-right: 4px;"></span>
+            </a>
+          {% endif %}
+        </div>
+        <a href="/agents" class="dash-new-agent"
+           onclick="event.preventDefault(); document.dispatchEvent(new CustomEvent('modal:open',{detail:{id:'new-agent-modal'}}));"
+           style="display: flex; align-items: center; gap: 9px; width: 100%;
+                  padding: 11px 10px; margin-top: 4px; border-radius: 12px;
+                  border: 1px dashed var(--line-strong); color: var(--muted);
+                  font-size: 13px; font-weight: 600; white-space: nowrap; text-decoration: none;">
+          <span style="width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; border: 1px solid var(--line-2);">{{ p::icon(name="plus", size=13) }}</span>
+          Build a new Agent
+        </a>
+      </div>
+
+      {# Sources card #}
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px 12px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 6px 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--muted); display: inline-flex;">{{ p::icon(name="sources", size=15) }}</span>
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--ink);">Sources</span>
+            {% if sources %}{{ p::pill(text=sources | length) }}{% else %}{{ p::pill(text="4") }}{% endif %}
+          </div>
+        </div>
+        {% if sources %}
+          {% for s in sources | slice(end=3) %}
+            <div style="display: flex; align-items: center; gap: 10px; padding: 8px 6px;">
+              <span style="width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--surface-sunk); border: 1px solid var(--line);">
+                {% if s.type == "SITE" %}{{ p::icon(name="globe", size=14) }}{% else %}{{ p::icon(name="file", size=14) }}{% endif %}
+              </span>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 12.5px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ s.name }}</div>
+                <div class="mono" style="font-size: 10.5px; color: var(--faint); margin-top: 1px;">{{ s.chunks }} chunks · {{ s.size }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 6px;">
+            <span style="width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--surface-sunk); border: 1px solid var(--line);">{{ p::icon(name="file", size=14) }}</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 12.5px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Employee Handbook.pdf</div>
+              <div class="mono" style="font-size: 10.5px; color: var(--faint); margin-top: 1px;">184 chunks · 2.4 MB</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 6px;">
+            <span style="width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--surface-sunk); border: 1px solid var(--line);">{{ p::icon(name="file", size=14) }}</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 12.5px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Brand Guidelines.pdf</div>
+              <div class="mono" style="font-size: 10.5px; color: var(--faint); margin-top: 1px;">96 chunks · 8.1 MB</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 6px;">
+            <span style="width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--surface-sunk); border: 1px solid var(--line);">{{ p::icon(name="globe", size=14) }}</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 12.5px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">networkershome.com</div>
+              <div class="mono" style="font-size: 10.5px; color: var(--faint); margin-top: 1px;">1240 chunks · 412 p</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </aside>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

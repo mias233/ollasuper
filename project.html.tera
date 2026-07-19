@@ -1,0 +1,85 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% block title %}{{ project_name }} — OllaSuper{% endblock %}
+
+{% block app_content %}
+<div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px;">
+  <div>
+    <div class="qw-eyebrow qw-eyebrow-accent">· PROJECT</div>
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px;">{{ project_name }}</h1>
+    {% if project_description %}
+      <p style="color: var(--ink-3); margin-top: 8px; max-width: 600px;">{{ project_description }}</p>
+    {% endif %}
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <a href="/sources" class="qw-btn qw-btn-outline qw-btn-sm">{{ m::icon(name="source", size=13) }} {{ sources_count }} sources</a>
+    <form method="post" action="/documents" style="display: inline;">
+      <button type="submit" class="qw-btn qw-btn-primary qw-btn-sm">{{ m::icon(name="sparkle", size=13) }} New document</button>
+    </form>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 260px 1fr; gap: 18px;">
+
+  {# Folders sidebar #}
+  <div>
+    <div class="qw-eyebrow" style="margin-bottom: 10px;">FOLDERS</div>
+    <turbo-frame id="folder-list">
+      <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+        {% if folders | length == 0 %}
+          <div style="font-size: 13px; color: var(--ink-3);">No folders yet.</div>
+        {% else %}
+          {% for f in folders %}
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; background: var(--white); border: 1px solid var(--rule);">
+              <span style="color: var(--ink-3);">{{ m::icon(name="folder", size=14) }}</span>
+              <span style="flex: 1; font-size: 13.5px;">{{ f.name }}</span>
+              <span class="qw-mono" style="font-size: 11px; color: var(--ink-3);">{{ f.doc_count }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </turbo-frame>
+
+    <form method="post" action="/projects/{{ project_pid }}/folders" style="display: flex; gap: 6px;">
+      <input name="name" type="text" required maxlength="120"
+             class="qw-input" placeholder="New folder name" style="padding: 8px 10px; font-size: 13px;">
+      <button type="submit" class="qw-btn qw-btn-outline qw-btn-sm" style="padding: 6px 12px;">{{ m::icon(name="plus", size=12) }}</button>
+    </form>
+  </div>
+
+  {# Documents grid #}
+  <div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <div class="qw-eyebrow">DOCUMENTS · {{ docs | length }}</div>
+    </div>
+    {% if docs | length == 0 %}
+      <div class="qw-card" style="padding: 36px; text-align: center;">
+        <p style="color: var(--ink-3);">No documents in this project yet.</p>
+        <form method="post" action="/documents" style="margin-top: 12px;">
+          <button type="submit" class="qw-btn qw-btn-primary qw-btn-sm">
+            {{ m::icon(name="sparkle", size=13) }} Create one
+          </button>
+        </form>
+      </div>
+    {% else %}
+      <div class="qw-card" style="padding: 0;">
+        {% for d in docs %}
+          <a href="/documents/{{ d.pid }}"
+             style="display: flex; align-items: center; gap: 18px; padding: 14px 20px; text-decoration: none; color: inherit; border-bottom: {% if not loop.last %}1px solid var(--rule){% else %}0{% endif %};">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--bone); display: flex; align-items: center; justify-content: center; color: var(--ink-3); flex-shrink: 0;">
+              {{ m::icon(name="doc", size=16) }}
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 14px; font-weight: 500;">{{ d.title }}</div>
+              <div style="font-size: 12px; color: var(--ink-3); margin-top: 2px;">
+                <span class="qw-mono">{{ d.kind }}</span> · {{ d.word_count }} words
+              </div>
+            </div>
+            <div class="qw-mono" style="font-size: 11px; color: var(--ink-3);">{{ d.updated_at | upper }}</div>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

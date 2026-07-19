@@ -1,0 +1,51 @@
+{% extends "layouts/base.html.tera" %}
+{% block title %}Scanning {{ seed_url }} — OllaSuper{% endblock %}
+
+{% block content %}
+<div data-controller="onboarding-progress"
+     data-onboarding-progress-expected-value="{{ expected_pages }}"
+     style="min-height: 100vh; background: var(--ink); color: var(--paper); padding: 56px 64px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+
+  <div style="max-width: 720px; width: 100%;">
+    <div class="qw-mono" style="font-size: 11px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 16px;">· {{ user_first_name | upper }} · WE'RE READING YOUR SITE</div>
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1;">
+      Scanning <span style="color: var(--accent);">{{ seed_url }}</span>
+    </h1>
+    <p style="color: rgba(250,247,242,0.6); font-size: 15px; line-height: 1.6; margin-top: 12px; max-width: 520px;">
+      Reading your homepage and finding your most important pages — about, pricing, products, blog. Each line below is a real page we just read.
+    </p>
+
+    {# Live scan list — replaced by Stimulus on every poll #}
+    <div data-onboarding-progress-target="list"
+         style="margin-top: 36px; display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 13px;">
+      {# initial placeholders, will be overwritten by first poll #}
+      <div style="color: rgba(250,247,242,0.4);">⠋ Connecting to {{ seed_url }}…</div>
+    </div>
+
+    {# Status footer #}
+    <div data-onboarding-progress-target="status"
+         class="qw-mono"
+         style="margin-top: 28px; font-size: 11px; color: rgba(250,247,242,0.5); letter-spacing: 0.08em;">
+      WAITING FOR FIRST RESPONSE…
+    </div>
+
+    {# Auto-draft teaser #}
+    <div data-onboarding-progress-target="draftTeaser"
+         style="margin-top: 28px; padding: 16px 20px; border-radius: 12px; background: rgba(250,247,242,0.05); border: 1px solid rgba(250,247,242,0.1); display: none;">
+      <div class="qw-mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px;">✦ DRAFTING IN PARALLEL</div>
+      <div style="font-size: 14px; color: rgba(250,247,242,0.85);">
+        We're already writing 3 hero headline drafts using the pages we've read. They'll be on your dashboard the moment we're done.
+      </div>
+    </div>
+
+    {# Skip option #}
+    <div style="margin-top: 40px;">
+      <form method="post" action="/onboarding/skip" style="margin: 0;">
+        <button type="submit" style="background: none; border: 0; color: rgba(250,247,242,0.4); font-size: 12px; cursor: pointer; padding: 8px 0; text-decoration: underline;">
+          Skip ahead to the dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

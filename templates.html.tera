@@ -1,0 +1,94 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% block title %}OllaSuper — templates{% endblock %}
+
+{% block app_content %}
+<div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px;">
+  <div>
+    <div class="qw-eyebrow qw-eyebrow-accent">· {{ workspace.name | upper }}</div>
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px;">
+      Templates
+      <span style="color: var(--ink-3); font-weight: 500;">&middot; {{ templates | length }} saved</span>
+    </h1>
+  </div>
+  <button class="qw-btn qw-btn-primary qw-btn-sm"
+          data-controller="dialog"
+          data-action="click->dialog#open"
+          data-dialog-modal-id-value="new-template-modal"
+          data-testid="new-template-btn">
+    {{ m::icon(name="plus", size=13) }} New template
+  </button>
+</div>
+
+<turbo-frame id="templates-grid">
+  {% if templates | length == 0 %}
+    <div class="qw-card" style="padding: 48px; text-align: center;">
+      <div class="qw-eyebrow qw-eyebrow-accent">START HERE</div>
+      <h2 style="font-size: 22px; font-weight: 600; margin-top: 12px;">Save your first prompt.</h2>
+      <p style="color: var(--ink-3); margin-top: 8px; max-width: 380px; margin-left: auto; margin-right: auto;">
+        A template is a reusable prompt with placeholders like <code class="qw-mono">{{"{{topic}}"}}</code>.
+        Use it inside any document's generation panel.
+      </p>
+      <button class="qw-btn qw-btn-primary qw-btn-sm" style="margin-top: 18px;"
+              data-controller="dialog" data-action="click->dialog#open"
+              data-dialog-modal-id-value="new-template-modal">
+        {{ m::icon(name="plus", size=13) }} New template
+      </button>
+    </div>
+  {% else %}
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+      {% for t in templates %}
+        {% include "partials/template_card.html.tera" %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</turbo-frame>
+
+<div id="new-template-modal"
+     data-controller="dialog"
+     data-dialog-target="modal"
+     style="display: none; position: fixed; inset: 0; background: rgba(20,17,13,0.5); align-items: center; justify-content: center; z-index: 100;">
+  <div style="background: var(--white); padding: 28px; border-radius: var(--radius-lg); max-width: 560px; width: 90%; box-shadow: 0 24px 64px rgba(0,0,0,0.25);">
+    <div class="qw-eyebrow qw-eyebrow-accent">NEW TEMPLATE</div>
+    <h2 style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-top: 8px;">Save a reusable prompt.</h2>
+    <form method="post" action="/templates" style="margin-top: 18px;">
+      <div style="margin-bottom: 14px;">
+        <label for="tpl-name" class="qw-label">Name</label>
+        <input id="tpl-name" name="name" type="text" required maxlength="120"
+               data-testid="tpl-name"
+               class="qw-input" placeholder="Landing page hero" autofocus>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+        <div>
+          <label for="tpl-kind" class="qw-label">Kind</label>
+          <select id="tpl-kind" name="kind" class="qw-input">
+            <option value="blog">Blog</option>
+            <option value="ad">Ad</option>
+            <option value="social">Social</option>
+            <option value="email">Email</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div>
+          <label for="tpl-desc" class="qw-label">Description <span style="color: var(--ink-3); font-weight: 400;">(optional)</span></label>
+          <input id="tpl-desc" name="description" type="text" maxlength="2000"
+                 class="qw-input" placeholder="What it's for">
+        </div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <label for="tpl-prompt" class="qw-label">Prompt</label>
+        <textarea id="tpl-prompt" name="prompt" required rows="6" class="qw-input"
+                  data-testid="tpl-prompt"
+                  placeholder="Write a hero block for {{ '{{product}}' }} targeting {{ '{{audience}}' }}. Mention {{ '{{benefit}}' }}."></textarea>
+        <div style="font-size: 11px; color: var(--ink-3); margin-top: 6px;">
+          Use <code class="qw-mono">{{ '{{var}}' }}</code> placeholders. They become input fields in the editor.
+        </div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" class="qw-btn qw-btn-outline qw-btn-sm" data-action="click->dialog#close">Cancel</button>
+        <button type="submit" data-testid="save-template" class="qw-btn qw-btn-primary qw-btn-sm">Save template</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

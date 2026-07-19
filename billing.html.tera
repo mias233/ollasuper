@@ -1,0 +1,111 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% block title %}OllaSuper — billing{% endblock %}
+
+{% block app_content %}
+<div style="margin-bottom: 24px;">
+  <div class="qw-eyebrow qw-eyebrow-accent">· {{ workspace.name | upper }}</div>
+  <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px;">Billing</h1>
+  <p style="color: var(--ink-3); margin-top: 8px;">Plan, usage, and payment management.</p>
+</div>
+
+{% set pct = (plan_used / plan_limit * 100) | round %}
+{% if pct > 100 %}{% set pct = 100 %}{% endif %}
+
+<div class="qw-card" style="padding: 28px; max-width: 720px; margin-bottom: 18px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <div class="qw-eyebrow">CURRENT PLAN</div>
+      <h2 style="font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin-top: 6px; text-transform: capitalize;">{{ plan }}</h2>
+      {% if plan_status %}
+        <div style="margin-top: 6px;">
+          <span class="qw-chip {% if plan_status == 'past_due' %}qw-chip-accent{% elif plan_status == 'canceled' %}qw-chip-accent{% else %}qw-chip-sage{% endif %}">
+            {{ plan_status | upper }}
+          </span>
+        </div>
+      {% endif %}
+    </div>
+    <div style="text-align: right;">
+      <div class="qw-eyebrow">CREDITS USED</div>
+      <div style="font-size: 28px; font-weight: 600; letter-spacing: -0.03em; margin-top: 6px;">{{ plan_used }} <span style="color: var(--ink-3); font-size: 14px; font-weight: 500;">/ {{ plan_limit }}</span></div>
+      <div class="qw-mono" style="font-size: 11px; color: var(--ink-3);">{{ pct }}% &middot; 1 credit = 1 token</div>
+    </div>
+  </div>
+  <div style="height: 8px; background: var(--bone); border-radius: 4px; overflow: hidden; margin-top: 20px;">
+    <div style="width: {{ pct }}%; height: 100%; background: var(--accent);"></div>
+  </div>
+  {% if current_period_end %}
+    <div class="qw-mono" style="font-size: 11px; color: var(--ink-3); margin-top: 14px;">
+      {% if cancel_at_period_end %}
+        ENDS {{ current_period_end }}
+      {% else %}
+        RENEWS {{ current_period_end }}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {# Top-up CTA: always present, contextually highlighted when low on credits #}
+  <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--rule-soft); display: flex; align-items: center; justify-content: space-between; gap: 14px;">
+    <div>
+      <div style="font-size: 13px; font-weight: 600; color: var(--ink);">Running low?</div>
+      <div style="font-size: 12px; color: var(--ink-3); margin-top: 2px;">
+        Top up <strong>100,000 credits for ₹99</strong> — added to your current period, doesn't expire until used.
+      </div>
+    </div>
+    <a href="/billing/topup" data-testid="topup-100k-card-cta"
+       class="qw-btn qw-btn-outline qw-btn-sm" style="white-space: nowrap;">
+      +100K · ₹99
+    </a>
+  </div>
+</div>
+
+{# Phase 15 #13 · active tier card stands up: accent-soft border, raised 2px,
+   inactive cards dim to 0.65 opacity so the user's eye lands on the right card. #}
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; max-width: 720px;">
+  {% set free_active = plan == "free" %}
+  {% set pro_active = plan == "pro" %}
+  {% set team_active = plan == "team" %}
+  {% set _free_dim = (pro_active or team_active) %}
+  {% set _pro_dim = (free_active or team_active) %}
+  {% set _team_dim = (free_active or pro_active) %}
+
+  <div class="qw-card" style="padding: 20px; opacity: {% if _free_dim %}0.65{% else %}1{% endif %}; {% if free_active %}border-color: var(--accent-soft); transform: translateY(-2px); box-shadow: var(--shadow-md);{% endif %} transition: transform 160ms var(--ease-out);">
+    <div class="qw-eyebrow">FREE</div>
+    <div style="font-size: 24px; font-weight: 600; margin-top: 4px;">₹0</div>
+    <div style="font-size: 12.5px; color: var(--ink-3); margin-top: 4px;">50,000 credits/mo · ○ Experts + read-only Agents</div>
+    <button class="qw-btn qw-btn-outline qw-btn-sm" disabled style="margin-top: 16px; width: 100%; justify-content: center; opacity: 0.5;">
+      {% if free_active %}Current plan{% else %}—{% endif %}
+    </button>
+  </div>
+
+  <div class="qw-card" style="padding: 20px; opacity: {% if _pro_dim %}0.65{% else %}1{% endif %}; {% if pro_active %}border-color: var(--accent-soft); transform: translateY(-2px); box-shadow: var(--shadow-md);{% endif %} transition: transform 160ms var(--ease-out);">
+    <div class="qw-eyebrow qw-eyebrow-accent">PRO</div>
+    <div style="font-size: 24px; font-weight: 600; margin-top: 4px;">₹499<span style="font-size: 13px; color: var(--ink-3);">/mo</span></div>
+    <div style="font-size: 12.5px; color: var(--ink-3); margin-top: 4px;">1,000,000 credits/mo · all 6 ⚡ Agents</div>
+    {% if pro_active %}
+      <button class="qw-btn qw-btn-outline qw-btn-sm" disabled style="margin-top: 16px; width: 100%; justify-content: center;">Current plan</button>
+    {% else %}
+      <a href="/billing/upgrade?tier=pro" data-testid="upgrade-pro"
+         class="qw-btn qw-btn-primary qw-btn-sm"
+         style="margin-top: 16px; width: 100%; justify-content: center; display: inline-flex;">
+        {{ m::icon(name="sparkle", size=12) }} Upgrade
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="qw-card" style="padding: 20px; opacity: {% if _team_dim %}0.65{% else %}1{% endif %}; {% if team_active %}border-color: var(--accent-soft); transform: translateY(-2px); box-shadow: var(--shadow-md);{% endif %} transition: transform 160ms var(--ease-out);">
+    <div class="qw-eyebrow">TEAM</div>
+    <div style="font-size: 24px; font-weight: 600; margin-top: 4px;">₹1,999<span style="font-size: 13px; color: var(--ink-3);">/mo</span></div>
+    <div style="font-size: 12.5px; color: var(--ink-3); margin-top: 4px;">10,000,000 credits/mo · 10 seats · SSO</div>
+    {% if team_active %}
+      <button class="qw-btn qw-btn-outline qw-btn-sm" disabled style="margin-top: 16px; width: 100%; justify-content: center;">Current plan</button>
+    {% else %}
+      <a href="/billing/upgrade?tier=team" data-testid="upgrade-team"
+         class="qw-btn qw-btn-primary qw-btn-sm"
+         style="margin-top: 16px; width: 100%; justify-content: center; display: inline-flex;">
+        {{ m::icon(name="sparkle", size=12) }} Upgrade
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,650 @@
+{# Phase 17.5 · Warm editorial chat surface.
+
+   Visual layer rewritten; ALL test-ids, Stimulus controllers/targets/actions,
+   ids, and data-* attributes preserved verbatim so:
+     • the 86-persona test suite (post-16.6 Pass B) still passes
+     • turbo-stream chat_append / chat_regenerate continue to land in #messages
+     • the chat-poll controller can find data-testid="chat-ai-msg"
+     • the composer keeps its keydown/autosize wiring
+
+   The right rail is rendered by chat_shell.html.tera (Recents on right per
+   Phase 15 user feedback). The conversation-context section in the rail
+   activates when `chat_context` is set in the render ctx; otherwise the
+   rail shows just Recents — graceful degradation.
+#}
+{% extends "layouts/chat_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% import "partials/primitives.html.tera" as p %}
+{% set active = "Chat" %}
+{% block title %}{{ chat_title | default(value="Chat") }} — OllaSuper{% endblock %}
+
+{% block chat_body %}
+<div data-controller="chat-stream" style="flex: 1; display: flex; flex-direction: column;
+                                          min-height: 0; position: relative; background: var(--paper);">
+
+  {# Conversation thread — Phase 23 · data-content-shell drives a responsive
+     clamp(720, 56vw, 1100) max-width via app.css. #}
+  <div data-chat-stream-target="thread"
+       data-action="scroll->chat-stream#scrolled"
+       style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 30px 0 24px;">
+    <div data-content-shell style="padding: 0 32px;">
+
+      {# Phase 19.1 · day divider removed for Mimo single-column thread. #}
+
+      {# Detect whether the last message is a user turn (no assistant reply yet)
+         so we can render the typing-dots placeholder that polls. #}
+      {% set last_is_user = false %}
+      {% set last_user_pid = "" %}
+      {% for msg in messages %}
+        {% if msg.role == "user" %}
+          {% set_global last_is_user = true %}
+          {% set_global last_user_pid = msg.pid %}
+        {% else %}
+          {% set_global last_is_user = false %}
+        {% endif %}
+      {% endfor %}
+
+      {# Phase 31.4b · data island for the poll controller. Read once by
+         chat_poll_controller.js to render the chip rail without a reload.
+         type="application/json" keeps it inert (no execution) and we run
+         it through JSON.parse on the client. #}
+      {% if agent_meta_json %}
+        <script id="agent-meta-island" type="application/json">{{ agent_meta_json | safe }}</script>
+      {% endif %}
+
+      <div id="messages" style="display: flex; flex-direction: column;">
+
+        {# ─── Phase 31.4 · handoff context card. Renders above the persona
+              card when the chat was created via a → Recruiter / → Legal
+              handoff. Shows the source Expert + summary + Reset link. ─── #}
+        {% if handoff_from_name and handoff_summary and messages | length == 0 %}
+          <div data-testid="chat-handoff-card"
+               style="border: 1px solid var(--line); border-left: 3px solid var(--clay);
+                      border-radius: var(--r-md); padding: 14px 18px;
+                      background: var(--surface-sunk); margin-bottom: 18px;
+                      font-size: 13px;">
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span class="mono" style="color: var(--clay); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;">▸ Picked up from</span>
+              <strong style="color: var(--ink);">{{ handoff_from_name }}</strong>
+              <span style="flex: 1;"></span>
+              <form method="post" action="/c/{{ chat_pid }}/reset_handoff" style="margin: 0; display: inline;">
+                <button type="submit" data-testid="chat-handoff-reset"
+                        style="border: 0; background: transparent; color: var(--muted);
+                               font-size: 11.5px; cursor: pointer; padding: 0;
+                               text-decoration: underline; font-family: inherit;">
+                  Reset context
+                </button>
+              </form>
+            </div>
+            <div data-testid="chat-handoff-summary"
+                 style="margin-top: 8px; color: var(--ink-2); white-space: pre-wrap;
+                        line-height: 1.55; font-size: 12.5px;">{{ handoff_summary }}</div>
+          </div>
+        {% endif %}
+
+        {# ─── Empty state — persona card + starters ─── #}
+        {% if (messages | length == 0) and agent_meta %}
+          <div data-testid="chat-empty-card" class="fade-up"
+               style="border: 1px solid var(--line); border-radius: var(--r-lg);
+                      padding: 22px 24px; background: var(--surface); margin-bottom: 28px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              {{ p::glyph_tile(glyph="◈", color="green", size=34, soft=true) }}
+              <div>
+                <div style="font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.005em;">{{ agent_meta.name }}</div>
+                <div class="mono" style="font-size: 11px; color: var(--faint); margin-top: 2px;">{% if agent_is_openfang %}agent{% else %}expert{% endif %}</div>
+              </div>
+            </div>
+            <div style="margin-top: 12px; font-size: 14px; color: var(--ink-2); line-height: 1.55;">{{ agent_meta.oneliner }}</div>
+
+            {% if agent_meta.tasks | length > 0 %}
+              {% set _t = agent_meta.tasks[0] %}
+              <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);">
+                <div class="uppercase-label" style="margin-bottom: 6px;">{{ _t.group }}</div>
+                <ul style="margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 12.5px; line-height: 1.7;">
+                  {% for it in _t.items %}<li>{{ it }}</li>{% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            {% if agent_meta.starters | length > 0 %}
+              {# Phase 31.4 · hero-only filter. HR has `hero: true` on its top
+                  4 chips; Experts not yet migrated to chips still see ALL
+                  starters because no chip has hero=true on those (defaults to
+                  false), so we fall back to ALL chips when hero count == 0. #}
+              {% set hero_count = agent_meta.starters | filter(attribute="hero", value=true) | length %}
+              <div class="uppercase-label" style="margin-top: 18px; margin-bottom: 8px;">Try one of these</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                {% for s in agent_meta.starters %}
+                  {% if hero_count == 0 or s.hero %}
+                  {# Phase 21.3 · prompt moved from inline JS arg (broken by
+                     single quotes in prompts like "'how to hire ...'") to
+                     a data-prompt HTML attribute. Tera `escape` filter
+                     turns ' into &#x27; which is safe inside an HTML attr.
+                     Phase 31.1 · slot cards. If the starter has slots, the
+                     click does NOT fire the prompt — it reveals an inline
+                     form keyed by data-slot-form-{{ index }}. The form
+                     posts to /c/{pid}/run_playbook which drives the
+                     ollagraph + LLM playbook. Non-slot starters keep the
+                     one-click submit behaviour. #}
+                  {% if s.slots | length > 0 %}
+                    <button type="button" data-testid="chat-starter-{{ loop.index0 }}"
+                            data-slot-target="slot-form-{{ loop.index0 }}"
+                            onclick="var t=this.getAttribute('data-slot-target');var f=document.getElementById(t);if(f){f.style.display='block';var first=f.querySelector('input,select,textarea');if(first)first.focus();this.style.display='none';}"
+                            class="expert-chip"
+                            style="text-align: left; padding: 12px 14px; border-radius: var(--r-md);
+                                   border: 1px solid var(--line); background: var(--surface);
+                                   color: var(--ink); cursor: pointer; font-family: inherit;">
+                      <div style="font-size: 13px; font-weight: 600; color: var(--ink);">▦ {{ s.title }}</div>
+                      <div style="margin-top: 3px; font-size: 11.5px; color: var(--muted);">{{ s.tagline }}</div>
+                      <div style="margin-top: 6px; font-size: 10.5px; color: var(--faint); font-family: var(--mono);">
+                        needs: {% for sl in s.slots %}{{ sl.label | lower }}{% if not loop.last %}, {% endif %}{% endfor %}
+                      </div>
+                    </button>
+                  {% else %}
+                    <button type="button" data-testid="chat-starter-{{ loop.index0 }}"
+                            data-prompt="{{ s.prompt | escape }}"
+                            onclick="var p=this.getAttribute('data-prompt');var c=document.querySelector('[data-testid=chat-composer]');if(c){c.value=p;c.focus();c.setSelectionRange(p.length,p.length);c.dispatchEvent(new Event('input',{bubbles:true}));}"
+                            class="expert-chip"
+                            style="text-align: left; padding: 12px 14px; border-radius: var(--r-md);
+                                   border: 1px solid var(--line); background: var(--surface);
+                                   color: var(--ink); cursor: pointer; font-family: inherit;">
+                      <div style="font-size: 13px; font-weight: 600; color: var(--ink);">{{ s.title }}</div>
+                      <div style="margin-top: 3px; font-size: 11.5px; color: var(--muted);">{{ s.tagline }}</div>
+                    </button>
+                  {% endif %}
+                  {% endif %}{# hero filter #}
+                {% endfor %}
+              </div>
+
+              {# ── Inline slot forms — one per slot card, hidden until the
+                  matching starter button is clicked. Sits BELOW the card
+                  grid so it pushes nothing and is easy to dismiss. ── #}
+              {% for s in agent_meta.starters %}
+                {% if s.slots | length > 0 %}
+                  <form id="slot-form-{{ loop.index0 }}"
+                        data-testid="chat-slot-form-{{ loop.index0 }}"
+                        action="/c/{{ chat_pid }}/run_playbook"
+                        method="post"
+                        style="display: none; margin-top: 14px; padding: 16px;
+                               border: 1px solid var(--line); border-radius: var(--r-md);
+                               background: var(--surface-sunk);">
+                    <input type="hidden" name="agent_slug" value="{{ agent_meta.slug }}">
+                    <input type="hidden" name="starter_idx" value="{{ loop.index0 }}">
+                    <div style="font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 10px;">▦ {{ s.title }}</div>
+                    {% for sl in s.slots %}
+                      <div style="margin-bottom: 10px;">
+                        <label style="display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px;">
+                          {{ sl.label }}{% if sl.required %} <span style="color: var(--clay);">*</span>{% endif %}
+                        </label>
+                        <input type="text" name="slot_{{ sl.key }}"
+                               data-testid="chat-slot-input-{{ sl.key }}"
+                               placeholder="{{ sl.example | default(value='') }}"
+                               {% if sl.required %}required{% endif %}
+                               style="width: 100%; padding: 8px 10px; border-radius: 6px;
+                                      border: 1px solid var(--line); background: var(--surface);
+                                      color: var(--ink); font-family: inherit; font-size: 13px;">
+                      </div>
+                    {% endfor %}
+                    <div style="margin-top: 6px; font-size: 11px; color: var(--faint); line-height: 1.55;">
+                      Will run:
+                      {% for p in s.playbook %}
+                        <span class="mono" style="color: var(--muted);">{{ p.label }}</span>{% if not loop.last %} · {% endif %}
+                      {% endfor %}
+                      &nbsp;<span style="color: var(--muted);">→ LLM synthesizes the report.</span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                      <button type="submit" data-testid="chat-slot-run-{{ loop.index0 }}"
+                              style="padding: 8px 14px; border-radius: 6px; border: 0;
+                                     background: var(--clay); color: white; font-family: inherit;
+                                     font-size: 13px; font-weight: 600; cursor: pointer;">
+                        Run playbook
+                      </button>
+                      <button type="button"
+                              onclick="var f=this.closest('form');f.style.display='none';var b=document.querySelector('[data-slot-target=slot-form-{{ loop.index0 }}]');if(b)b.style.display='';"
+                              style="padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line);
+                                     background: transparent; color: var(--muted); font-family: inherit;
+                                     font-size: 13px; cursor: pointer;">
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {# ─── Messages ─── #}
+        {% for msg in messages %}
+          {% if msg.role == "user" %}
+            {# USER bubble: paper-2 bg, 18px 18px 6px 18px radius, right-aligned, 76% max #}
+            <div data-testid="chat-user-msg" data-msg-pid="{{ msg.pid }}" class="fade-up"
+                 style="display: flex; justify-content: flex-end; align-items: flex-end;
+                        gap: 6px; margin-bottom: 30px;">
+              <button type="button" data-testid="chat-send-again-{{ msg.pid }}"
+                      class="chat-actions msg-act-btn"
+                      title="Edit and send again"
+                      onclick='(function(btn){var raw=btn.closest("[data-testid=chat-user-msg]").querySelector("[data-user-raw]");var t=raw&&raw.getAttribute("data-user-raw")||"";var c=document.querySelector("[data-testid=chat-composer]")||document.querySelector("textarea[name=prompt]");if(c){c.value=t;c.focus();c.dispatchEvent(new Event("input",{bubbles:true}));window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});}})(this)'
+                      style="border: 0; background: transparent; padding: 5px 9px;
+                             border-radius: 8px; font-size: 12px; color: var(--muted);
+                             cursor: pointer; font-family: inherit; opacity: 0;
+                             transition: opacity 120ms ease;">
+                Send again
+              </button>
+              <div data-user-raw="{{ msg.content | escape }}"
+                   style="max-width: 76%; background: var(--surface-sunk);
+                          border: 0;
+                          border-radius: 14px 14px 4px 14px;
+                          padding: 11px 16px; font-size: 15px; line-height: 1.55;
+                          color: var(--ink); white-space: pre-wrap;">{{ msg.content }}</div>
+            </div>
+          {% else %}
+            {# Phase 19.1 · ASSISTANT turn — Mimo single-column.
+               GlyphTile + name + "expert" pill removed; the markdown body
+               is the message. The chat header (Workspace › Chat title) +
+               the Expert/Agent dropdown in the topbar are now the only
+               places the persona is named — reduces visual repetition. #}
+            <div data-testid="chat-ai-msg" data-msg-pid="{{ msg.pid }}"
+                 class="fade-up assistant-turn"
+                 style="display: block; margin-bottom: 40px;">
+              <div style="flex: 1; min-width: 0;">
+                {% if msg.synthesis %}
+                  <details style="font-size: 12.5px; color: var(--muted); margin-bottom: 8px;">
+                    <summary style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 4px 0;">
+                      <span style="color: var(--faint);">▸</span> {{ msg.synthesis }}
+                    </summary>
+                  </details>
+                {% endif %}
+
+                {# Message body — rendered markdown. The .chat-md rules in
+                   app.css (Phase 19.1) handle h2/h3/p/ul/code spacing &
+                   weight; this wrapper sets only the base family. #}
+                <div class="chat-md" data-msg-md="{{ msg.content | escape }}"
+                     style="font-family: var(--sans);">
+                  {{ msg.content | markdown | safe }}
+                </div>
+
+                {# Phase 20 · Mimo-style 6-icon action row.
+                   Copy / Info / Regenerate / ThumbUp / ThumbDown / Share.
+                   - Copy & Retry preserve their test-ids and existing handlers.
+                   - Info pops the message meta (model · words · grade) as title.
+                   - ThumbUp/ThumbDown only flip aria-pressed for now — feedback
+                     persistence is roadmap. No backend call yet.
+                   - Share copies the chat URL to clipboard via navigator.clipboard.
+                   The row is no longer hover-revealed — always visible (Mimo
+                   shows action icons by default). The .chat-actions class is
+                   retained for back-compat with persona-test CSS selectors. #}
+                <div class="chat-actions msg-actions"
+                     style="display: flex; gap: 4px; align-items: center; margin-top: 10px;
+                            opacity: 1; color: var(--muted);">
+                  <button type="button" data-testid="chat-copy-{{ msg.pid }}"
+                          class="msg-act-btn" title="Copy"
+                          onclick='(function(btn){var el=btn.closest("[data-testid=chat-ai-msg]").querySelector("[data-msg-md]");var t=el&&el.getAttribute("data-msg-md")||el.innerText||"";navigator.clipboard.writeText(t);})(this)'
+                          style="display: inline-flex; align-items: center; justify-content: center;
+                                 width: 28px; height: 28px; border: 0; background: transparent;
+                                 border-radius: 6px; color: var(--muted); cursor: pointer;">
+                    {{ p::icon(name="copy", size=14) }}
+                  </button>
+                  <button type="button"
+                          class="msg-act-btn"
+                          title="{% if msg.meta %}{% if msg.meta.model %}{{ msg.meta.model }}{% endif %}{% if msg.meta.word_count %} · {{ msg.meta.word_count }}w{% endif %}{% if msg.meta.grade %} · grade {{ msg.meta.grade | round(precision=0) }}{% endif %}{% else %}—{% endif %}"
+                          style="display: inline-flex; align-items: center; justify-content: center;
+                                 width: 28px; height: 28px; border: 0; background: transparent;
+                                 border-radius: 6px; color: var(--muted); cursor: pointer;">
+                    {{ p::icon(name="info", size=14) }}
+                  </button>
+                  <form method="post" action="/c/{{ chat_pid }}/messages/{{ msg.pid }}/regenerate" style="margin: 0; display: inline-flex;">
+                    <button type="submit" data-testid="chat-regenerate-{{ msg.pid }}"
+                            class="msg-act-btn" title="Regenerate"
+                            style="display: inline-flex; align-items: center; justify-content: center;
+                                   width: 28px; height: 28px; border: 0; background: transparent;
+                                   border-radius: 6px; color: var(--muted); cursor: pointer;">
+                      {{ p::icon(name="refresh", size=14) }}
+                    </button>
+                  </form>
+                  <button type="button"
+                          class="msg-act-btn" title="Good response"
+                          aria-pressed="false"
+                          onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') === 'true' ? 'false' : 'true')"
+                          style="display: inline-flex; align-items: center; justify-content: center;
+                                 width: 28px; height: 28px; border: 0; background: transparent;
+                                 border-radius: 6px; color: var(--muted); cursor: pointer;">
+                    {{ p::icon(name="thumbUp", size=14) }}
+                  </button>
+                  <button type="button"
+                          class="msg-act-btn" title="Bad response"
+                          aria-pressed="false"
+                          onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') === 'true' ? 'false' : 'true')"
+                          style="display: inline-flex; align-items: center; justify-content: center;
+                                 width: 28px; height: 28px; border: 0; background: transparent;
+                                 border-radius: 6px; color: var(--muted); cursor: pointer;">
+                    {{ p::icon(name="thumbDown", size=14) }}
+                  </button>
+                  <button type="button"
+                          class="msg-act-btn" title="Copy chat link"
+                          onclick="navigator.clipboard.writeText(window.location.href)"
+                          style="display: inline-flex; align-items: center; justify-content: center;
+                                 width: 28px; height: 28px; border: 0; background: transparent;
+                                 border-radius: 6px; color: var(--muted); cursor: pointer;">
+                    {{ p::icon(name="share", size=14) }}
+                  </button>
+                </div>
+
+                {# ── Phase 31.4 · chip rail.
+                    4 relevance-ranked chips + ▾ More popover + handoff strip.
+                    Only renders when the chat is under an Expert that has
+                    chips and this assistant message has computed indices. #}
+                {% if agent_meta and msg.chip_indices and msg.chip_indices | length > 0 %}
+                  <div data-testid="chat-chip-rail-{{ msg.pid }}"
+                       style="margin-top: 14px; display: flex; flex-wrap: wrap;
+                              gap: 6px; align-items: center; font-size: 12px;">
+                    <span style="color: var(--faint); margin-right: 4px;">Next:</span>
+                    {% for idx in msg.chip_indices %}
+                      {% set s = agent_meta.starters[idx] %}
+                      <button type="button"
+                              data-testid="chat-chip-{{ msg.pid }}-{{ idx }}"
+                              data-prompt="{{ s.prompt | escape }}"
+                              title="{{ s.tagline }}"
+                              onclick="var p=this.getAttribute('data-prompt');var c=document.querySelector('[data-testid=chat-composer]');if(c){c.value=p;c.focus();c.setSelectionRange(p.length,p.length);c.dispatchEvent(new Event('input',{bubbles:true}));}"
+                              style="padding: 6px 12px; border-radius: 14px;
+                                     border: 1px solid var(--line); background: var(--surface);
+                                     color: var(--ink); cursor: pointer; font-family: inherit;
+                                     font-size: 12px; line-height: 1.3;">
+                        {{ s.title }}
+                      </button>
+                    {% endfor %}
+
+                    {% if agent_meta.starters | length > msg.chip_indices | length %}
+                      {# Phase 31.8 · popover positioning. Anchor the absolute
+                         panel to this details element (position: relative) and
+                         right-align it (right: 0) so it grows leftward instead
+                         of off-screen. Clamp width to the viewport on narrow
+                         devices. #}
+                      <details style="display: inline-block; position: relative;">
+                        <summary data-testid="chat-chip-more-{{ msg.pid }}"
+                                 style="padding: 6px 12px; border-radius: 14px;
+                                        border: 1px solid var(--line); background: var(--surface);
+                                        color: var(--muted); cursor: pointer; font-family: inherit;
+                                        font-size: 12px; list-style: none;">
+                          ▾ More
+                        </summary>
+                        <div data-testid="chat-chip-more-panel-{{ msg.pid }}"
+                             style="position: absolute; right: 0; top: 100%; z-index: 50; margin-top: 6px;
+                                    padding: 10px; min-width: 260px; max-width: min(320px, calc(100vw - 32px));
+                                    background: var(--surface); border: 1px solid var(--line);
+                                    border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+                                    display: flex; flex-direction: column; gap: 4px;
+                                    max-height: 60vh; overflow-y: auto;">
+                          {% for s in agent_meta.starters %}
+                            {% set_global skip = false %}
+                            {% for ci in msg.chip_indices %}
+                              {% if loop.index0 == ci %}{% set_global skip = true %}{% endif %}
+                            {% endfor %}
+                            {% if not skip %}
+                              <button type="button"
+                                      data-prompt="{{ s.prompt | escape }}"
+                                      onclick="var p=this.getAttribute('data-prompt');var c=document.querySelector('[data-testid=chat-composer]');if(c){c.value=p;c.focus();c.setSelectionRange(p.length,p.length);c.dispatchEvent(new Event('input',{bubbles:true}));}"
+                                      style="padding: 6px 8px; border-radius: 6px;
+                                             border: 0; background: transparent;
+                                             color: var(--ink); cursor: pointer; font-family: inherit;
+                                             font-size: 12.5px; text-align: left; line-height: 1.4;">
+                                {{ s.title }}
+                                <span style="display: block; font-size: 11px; color: var(--muted); margin-top: 1px;">{{ s.tagline }}</span>
+                              </button>
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      </details>
+                    {% endif %}
+
+                    {% if agent_meta.pairs and agent_meta.pairs | length > 0 %}
+                      <span style="flex: 1;"></span>
+                      <span style="color: var(--faint); margin-right: 4px;">Hand off:</span>
+                      {% for p in agent_meta.pairs %}
+                        <form method="post"
+                              action="/c/{{ chat_pid }}/handoff"
+                              style="margin: 0; display: inline;">
+                          <input type="hidden" name="target_slug" value="{{ p.slug }}">
+                          <button type="submit"
+                                  data-testid="chat-handoff-{{ msg.pid }}-{{ p.slug }}"
+                                  style="padding: 6px 12px; border-radius: 14px;
+                                         border: 1px solid var(--line); background: var(--surface);
+                                         color: var(--muted); cursor: pointer; font-family: inherit;
+                                         font-size: 12px; line-height: 1.3;">
+                            → {{ p.name }}
+                          </button>
+                        </form>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {# Approval card (Phase 11) — kept verbatim, repainted in clay/amber #}
+                {% if msg.email_draft %}
+                  <div id="approve-card-{{ msg.pid }}" class="pop-in"
+                       style="margin-top: 14px; border: 1px solid var(--amber);
+                              background: var(--amber-soft); border-radius: var(--r-md);
+                              padding: 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px;
+                                font-size: 11px; color: var(--clay-deep); font-weight: 600;
+                                letter-spacing: 0.08em; text-transform: uppercase;
+                                font-family: var(--mono);">
+                      <span style="color: var(--clay);">{{ p::icon(name="bolt", size=13) }}</span>
+                      <span>Awaiting approval · email draft</span>
+                    </div>
+                    <div style="margin-top: 12px; padding: 12px 14px;
+                                background: var(--surface); border: 1px solid var(--line);
+                                border-radius: 8px; font-family: var(--mono);
+                                font-size: 12.5px; line-height: 1.55;">
+                      <div><span style="color: var(--muted);">To:</span> <strong>{{ msg.email_draft.to }}</strong></div>
+                      <div><span style="color: var(--muted);">Subject:</span> <strong>{{ msg.email_draft.subject }}</strong></div>
+                      <hr style="border: 0; border-top: 1px solid var(--line); margin: 10px 0;">
+                      <div style="font-family: var(--sans); font-size: 13.5px;
+                                  line-height: 1.6; color: var(--ink-2); white-space: pre-wrap;">{{ msg.email_draft.body }}</div>
+                    </div>
+                    <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
+                      <form method="post" action="/c/{{ chat_pid }}/messages/{{ msg.pid }}/approve" style="display: inline;">
+                        <button type="submit" class="qw-btn qw-btn-primary"
+                                style="padding: 8px 16px; font-size: 13px; font-weight: 600;">
+                          ✓ Approve &amp; Send
+                        </button>
+                      </form>
+                      <form method="post" action="/c/{{ chat_pid }}/messages/{{ msg.pid }}/reject" style="display: inline;">
+                        <button type="submit" class="qw-btn qw-btn-outline"
+                                style="padding: 8px 14px; font-size: 13px;">
+                          Reject
+                        </button>
+                      </form>
+                      <span style="flex: 1;"></span>
+                      <span style="font-size: 11px; color: var(--muted);">Sends via Resend · MAIL_FROM</span>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {# Phase 18 P5 · content-draft approval card.
+                   Approve → POST /content-drafts/approve creates a documents
+                   row and 303s to the editor so the user can polish + publish. #}
+                {% if msg.content_draft %}
+                  <div id="content-draft-{{ msg.pid }}" class="pop-in"
+                       style="margin-top: 14px; border: 1px solid var(--amber);
+                              background: var(--amber-soft); border-radius: var(--r-md);
+                              padding: 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px;
+                                font-size: 11px; color: var(--clay-deep); font-weight: 600;
+                                letter-spacing: 0.08em; text-transform: uppercase;
+                                font-family: var(--mono);">
+                      <span style="color: var(--clay);">{{ p::icon(name="bolt", size=13) }}</span>
+                      <span>Awaiting approval · content draft · {{ msg.content_draft.format }}</span>
+                    </div>
+                    <div style="margin-top: 12px; padding: 12px 14px;
+                                background: var(--surface); border: 1px solid var(--line);
+                                border-radius: 8px;">
+                      <div style="font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">{{ msg.content_draft.title }}</div>
+                      <div style="font-family: var(--sans); font-size: 13.5px;
+                                  line-height: 1.6; color: var(--ink-2); white-space: pre-wrap;
+                                  max-height: 280px; overflow-y: auto;">{{ msg.content_draft.body }}</div>
+                    </div>
+                    <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
+                      <form method="post" action="/content-drafts/approve" style="display: inline;">
+                        <input type="hidden" name="msg_pid" value="{{ msg.pid }}">
+                        <input type="hidden" name="title" value="{{ msg.content_draft.title | escape }}">
+                        <input type="hidden" name="format" value="{{ msg.content_draft.format | escape }}">
+                        <input type="hidden" name="body" value="{{ msg.content_draft.body | escape }}">
+                        <button type="submit" class="qw-btn qw-btn-primary"
+                                style="padding: 8px 16px; font-size: 13px; font-weight: 600;">
+                          ✓ Approve &amp; Save as doc
+                        </button>
+                      </form>
+                      <span style="flex: 1;"></span>
+                      <span style="font-size: 11px; color: var(--muted);">Lands in Documents — edit, then publish</span>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        {# ─── Typing-dots placeholder (polls for assistant reply) ─── #}
+        {% if last_is_user %}
+          <div data-controller="chat-poll"
+               data-chat-poll-chat-pid-value="{{ chat_pid }}"
+               data-chat-poll-user-msg-pid-value="{{ last_user_pid }}"
+               data-chat-poll-id="thinking-{{ last_user_pid }}"
+               class="fade-up"
+               style="display: flex; gap: 15px; margin-bottom: 34px;">
+            {{ p::glyph_tile(glyph="◈", color=(agent_meta and agent_meta.color or "green"), size=34, soft=true) }}
+            <div style="flex: 1; padding-top: 4px;">
+              <div class="uppercase-label" style="margin-bottom: 8px;">Thinking</div>
+              {{ p::typing() }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {# Floating scroll-to-bottom button #}
+  <button type="button"
+          data-chat-stream-target="scrollBtn"
+          data-action="click->chat-stream#scrollToBottom"
+          style="position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%);
+                 width: 34px; height: 34px; border-radius: 99px;
+                 background: var(--surface); border: 1px solid var(--line);
+                 box-shadow: var(--sh-md); display: none; align-items: center;
+                 justify-content: center; color: var(--muted); cursor: pointer;">
+    {{ p::icon(name="chevD", size=16) }}
+  </button>
+
+  {# Hidden target used by the Turbo Stream "update" action to nudge the
+     composer-controller into clearing its textarea after a successful send. #}
+  <div id="composer-textarea-reset" data-controller="composer-reset" style="display: none;"></div>
+
+  {# ─── Composer — pinned bottom, gradient-to-paper fade ─── #}
+  <div style="flex-shrink: 0; padding: 0 0 22px;
+              background: linear-gradient(to top, var(--paper) 60%, transparent);">
+    <div data-content-shell style="padding: 0 32px;">
+      {# Phase 19.1 · Mimo-style composer. Model + effort selectors moved
+         to the topbar dropdown — left here as hidden inputs keyed by
+         localStorage via the composer controller. "Add a source" collapsed
+         to a leading + icon; "Send" is the trailing paper-plane.
+         The topbar-picker dispatches `topbar:model-changed` on each pick;
+         composer_controller listens and rewrites the hidden input. #}
+      <form method="post" action="/c/{{ chat_pid }}/message"
+            data-controller="composer"
+            data-action="submit->composer#submitting topbar:model-changed@document->composer#syncModel"
+            class="composer-shell"
+            style="background: var(--surface); border: 1px solid var(--line);
+                   border-radius: 18px; padding: 12px 14px 10px;
+                   box-shadow: none;">
+
+        <textarea name="prompt"
+                  data-testid="chat-composer"
+                  data-composer-target="textarea"
+                  data-action="keydown->composer#keydown input->composer#autosize"
+                  rows="1"
+                  placeholder="Ask me anything! Hold Shift+Enter to start a new line."
+                  style="width: 100%; border: 0; outline: none; resize: none;
+                         padding: 4px 4px 6px;
+                         font-family: var(--sans); font-size: 15px; line-height: 1.55;
+                         color: var(--ink); background: transparent;
+                         min-height: 28px; max-height: 160px; overflow-y: auto;"></textarea>
+
+        <div style="display: flex; align-items: center; justify-content: space-between;
+                    gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 4px;">
+            {# Phase 20 · Mimo composer — 36px icons, surface-sunk circle. #}
+            <button type="button"
+                    title="Attach a source"
+                    onclick="document.dispatchEvent(new CustomEvent('modal:open', {detail: {id: 'add-source-modal'}}))"
+                    style="display: inline-flex; align-items: center; justify-content: center;
+                           width: 36px; height: 36px; border-radius: 99px;
+                           border: 0; background: var(--surface-sunk);
+                           color: var(--ink-2); cursor: pointer; font-family: inherit;">
+              {{ p::icon(name="plus", size=17) }}
+            </button>
+          </div>
+
+          <button type="submit"
+                  data-testid="composer-submit"
+                  data-composer-target="submit"
+                  title="Send (Enter)"
+                  style="display: inline-flex; align-items: center; justify-content: center;
+                         width: 36px; height: 36px; border-radius: 99px;
+                         background: var(--accent); color: #fff;
+                         border: 0; cursor: pointer;">
+            {{ p::icon(name="arrow", size=17) }}
+          </button>
+        </div>
+
+        {# Hidden defaults so the existing endpoint still works. Model is
+           re-written from localStorage on connect by composer_controller. #}
+        <input type="hidden" name="kind" value="blog">
+        <input type="hidden" name="model" data-composer-target="modelField"
+               value="openrouter/google/gemini-2.5-flash">
+        {% if default_scan_pid %}
+          <input type="hidden" name="scan_pids" value="{{ default_scan_pid }}">
+        {% endif %}
+      </form>
+
+      {# Phase 20 · Mimo-style centered footer caveat. Replaces the previous
+         "Responses are grounded in your sources" line which mixed function
+         (kbd hints) with disclaimer. Hints belong in the placeholder. #}
+      <div style="text-align: center; margin-top: 10px; font-size: 11.5px; color: var(--faint);">
+        AI-generated content. Verify important info before acting on it.
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Phase 17.5 · chat-md typography for rendered markdown. Same selectors as
+   Phase 15/16 so the persona-test markdown rendering contract is unchanged;
+   only the visual tokens shift to paper/clay. */
+.chat-md > *:first-child { margin-top: 0; }
+.chat-md h1 { font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: -0.018em; margin-top: 28px; margin-bottom: 12px; color: var(--ink); }
+.chat-md h2 { font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.015em; margin-top: 24px; margin-bottom: 10px; color: var(--ink); }
+.chat-md h3 { font-size: 17px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; color: var(--ink); }
+.chat-md p { margin: 0 0 12px; line-height: 1.62; }
+.chat-md strong { color: var(--ink); font-weight: 600; }
+.chat-md em { font-style: italic; }
+.chat-md ul, .chat-md ol { margin: 0 0 14px; padding-left: 24px; }
+.chat-md li { margin-bottom: 4px; line-height: 1.62; }
+.chat-md code { font-family: var(--mono); font-size: 0.88em; background: var(--surface-sunk); border: 1px solid var(--line); padding: 1px 5px; border-radius: 5px; }
+.chat-md pre { background: #1F1B16; color: #F0E9DD; padding: 16px 18px; border-radius: 12px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; margin: 14px 0; border: 1px solid #2c2620; }
+.chat-md pre code { background: transparent; border: 0; padding: 0; color: inherit; }
+.chat-md blockquote { border-left: 3px solid var(--line-strong); padding-left: 14px; color: var(--muted); margin: 0 0 14px; }
+.chat-md hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+.chat-md a { color: var(--clay-deep); text-decoration: underline; }
+.chat-md table { border-collapse: collapse; margin: 0 0 14px; font-size: 14px; }
+.chat-md th, .chat-md td { padding: 8px 12px; border: 1px solid var(--line); text-align: left; }
+.chat-md th { background: var(--surface-sunk); font-weight: 600; }
+
+/* Hover-reveal class — preserved selector contract from Phase 16.2 so the
+   persona test that asserts on hover doesn't break. */
+[data-testid="chat-ai-msg"]:hover .chat-actions,
+[data-testid="chat-ai-msg"]:focus-within .chat-actions,
+[data-testid="chat-user-msg"]:hover .chat-actions,
+[data-testid="chat-user-msg"]:focus-within .chat-actions { opacity: 1; }
+</style>
+{% endblock %}

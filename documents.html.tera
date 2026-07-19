@@ -1,0 +1,53 @@
+{% extends "layouts/app_shell.html.tera" %}
+{% import "partials/macros.html.tera" as m %}
+{% block title %}OllaSuper — documents{% endblock %}
+
+{% block app_content %}
+<div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px;">
+  <div>
+    <div class="qw-eyebrow qw-eyebrow-accent">· {{ workspace.name | upper }}</div>
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px;">
+      Documents
+      <span style="color: var(--ink-3); font-weight: 500;">&middot; {{ docs | length }} active</span>
+    </h1>
+  </div>
+  <form method="post" action="/documents" style="display: inline;">
+    <button type="submit" class="qw-btn qw-btn-primary qw-btn-sm">
+      {{ m::icon(name="sparkle", size=13) }} New document
+    </button>
+  </form>
+</div>
+
+{% if docs | length == 0 %}
+  <div class="qw-card" style="padding: 48px; text-align: center;">
+    <div class="qw-eyebrow qw-eyebrow-accent">START HERE</div>
+    <h2 style="font-size: 22px; font-weight: 600; margin-top: 12px;">Write your first piece.</h2>
+    <p style="color: var(--ink-3); margin-top: 8px; max-width: 380px; margin-left: auto; margin-right: auto;">
+      A document holds your draft + the variants the model produced. Click below to open the editor.
+    </p>
+    <form method="post" action="/documents" style="display: inline;">
+      <button type="submit" class="qw-btn qw-btn-primary qw-btn-sm" style="margin-top: 18px;">
+        {{ m::icon(name="plus", size=13) }} New document
+      </button>
+    </form>
+  </div>
+{% else %}
+  <div class="qw-card" style="padding: 0;">
+    {% for d in docs %}
+      <a href="/documents/{{ d.pid }}"
+         style="display: flex; align-items: center; gap: 18px; padding: 14px 20px; text-decoration: none; color: inherit; border-bottom: {% if not loop.last %}1px solid var(--rule){% else %}0{% endif %};">
+        <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--bone); display: flex; align-items: center; justify-content: center; color: var(--ink-3); flex-shrink: 0;">
+          {{ m::icon(name="doc", size=16) }}
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 15px; font-weight: 500;">{{ d.title }}</div>
+          <div style="font-size: 12px; color: var(--ink-3); margin-top: 2px;">
+            {{ d.project_name }} · <span class="qw-mono">{{ d.kind }}</span> · {{ d.word_count }} words
+          </div>
+        </div>
+        <div class="qw-mono" style="font-size: 11px; color: var(--ink-3);">{{ d.updated_at | upper }}</div>
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
