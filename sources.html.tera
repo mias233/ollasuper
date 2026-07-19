@@ -104,7 +104,7 @@
           </label>
           <div style="display: flex; gap: 8px; align-items: center;">
             {% if projects | length > 0 %}
-              <select name="project_pid" style="padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--white); font-size: 12px; color: var(--ink-2);">
+              <select name="project_pid" style="padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--white); font-size: 12px; color: #000;">
                 {% for p in projects %}<option value="{{ p.pid }}">{{ p.name }}</option>{% endfor %}
               </select>
             {% endif %}
