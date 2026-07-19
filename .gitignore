@@ -1,0 +1,99 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Node / Astro / esbuild
+# ──────────────────────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.astro/
+.wrangler/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Rust
+# ──────────────────────────────────────────────────────────────────────────────
+target/
+**/target/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Local DBs
+# ──────────────────────────────────────────────────────────────────────────────
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Build / dev / test logs and scratch
+# ──────────────────────────────────────────────────────────────────────────────
+build*.log
+mkt-build*.log
+pw-*.log
+backend.log
+frontend.log
+npm-install.log
+*.log
+
+# Playwright artifacts (videos, screenshots, traces — re-generated per run)
+playwright-report/
+test-results/
+copyai_remote/test-results/
+copyai_remote/playwright-report/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Local dev env (KEEP secrets out of git — Stripe key, OpenAI key, etc.)
+# ──────────────────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.env.local
+copyai_remote/.env.test.local
+
+# ──────────────────────────────────────────────────────────────────────────────
+# OS / editor
+# ──────────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Stray scratch files left from earlier iteration (audit + rebuild work)
+# These shouldn't be tracked; safe to delete from disk too.
+# ──────────────────────────────────────────────────────────────────────────────
+fix.js
+patch1.js
+patch2.js
+patch3.js
+patch4.js
+App.tsx
+auth.spec.ts
+index.tsx
+index.css
+postcss.config.js
+tailwind.config.js
+playwright.config.ts
+screenshot-*.png
+db_snap.sqlite
+verify-test/
+qwriter/
+copyai_remote/frontend_src/
+copyai_remote/frontend_package.json
+.cf.local.env
+
+# Local debug/dump files
+/aeo.json
+/batch.json
+/chat.html
+/ed.html
+/edit.html
+/editor_dump.html
+/sources_dump.html
+/og_openapi.json
+copyai_remote/dump_variants.cjs
+
+# graphify-generated knowledge graph (regenerated, not committed)
+graphify-out/
+
+# stray local files from previous test runs
+cc.css
+cc.html

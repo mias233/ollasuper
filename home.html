@@ -1,0 +1,1341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ollawrite — AI Writer</title>
+
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+
+  
+  <link rel="stylesheet"
+        href="https://qwriter-tokens.pages.dev/v1/tokens.css"
+        crossorigin="anonymous">
+  
+
+  
+  <link rel="stylesheet" href="/static/app.css?v=1781062945385034400">
+
+  
+  
+  <script type="module" src="/static/vendor/app.js?v=1781062945385184900"></script>
+
+  <meta name="turbo-cache-control" content="no-preview">
+  <meta name="turbo-refresh-method" content="morph">
+  <meta name="turbo-refresh-scroll" content="preserve">
+
+  
+</head>
+<body class="qw-board" data-turbo-prefetch="false">
+  
+<div class="qw-app">
+  
+
+<aside class="qw-app-sidebar" style="width: 80px; flex-shrink: 0; display: flex; flex-direction: column; padding: 14px 8px 12px; height: 100%; background: var(--white); border-right: 1px solid var(--rule); align-items: stretch;">
+
+  
+  <a href="/" style="display: flex; align-items: center; justify-content: center; padding: 8px 0 14px; text-decoration: none;">
+    <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; letter-spacing: -0.02em;">o</div>
+  </a>
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+<a href="/" data-turbo-action="advance"
+   data-testid="nav-new"
+   title="New"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #ffe1d1; color: #9a3a0e; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3 8h10"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">New</span>
+</a>
+
+  <div style="height: 6px;"></div>
+
+  
+  <nav style="display: flex; flex-direction: column; gap: 4px;">
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/" data-turbo-action="advance"
+   data-testid="nav-dashboard"
+   title="Dashboard"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink); background: var(--cream); transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #dde7f4; color: #1f3a6e; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Dashboard</span>
+</a>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/documents" data-turbo-action="advance"
+   data-testid="nav-documents"
+   title="Docs"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #dfe9dc; color: #2d4a2d; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h5l3 3v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M9 2v3h3"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Docs</span>
+</a>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/sources" data-turbo-action="advance"
+   data-testid="nav-sources"
+   title="Sources"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #ecdef0; color: #5e2a72; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M2 8h12"/><path d="M8 2c2 2 3 4 3 6s-1 4-3 6c-2-2-3-4-3-6s1-4 3-6Z"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Sources</span>
+</a>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/templates" data-turbo-action="advance"
+   data-testid="nav-templates"
+   title="Tools"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #f8e8c8; color: #7a5a14; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="3" rx="0.5"/><rect x="2" y="7" width="7" height="7" rx="0.5"/><rect x="11" y="7" width="3" height="7" rx="0.5"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Tools</span>
+</a>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/projects" data-turbo-action="advance"
+   
+   title="Projects"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #dceee8; color: #1f5a4c; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.5a1 1 0 0 1 1-1h3l1.5 1.5h5a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4.5Z"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Projects</span>
+</a>
+
+  </nav>
+
+  <div style="flex: 1;"></div>
+
+  
+  <nav style="display: flex; flex-direction: column; gap: 4px; padding-top: 8px; border-top: 1px solid var(--rule);">
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/billing" data-turbo-action="advance"
+   data-testid="nav-billing"
+   title="Billing"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #f3dfe2; color: #7a2240; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 7h12"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Billing</span>
+</a>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+<a href="/settings" data-turbo-action="advance"
+   
+   title="Settings"
+   style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 6px; border-radius: 12px; text-decoration: none; color: var(--ink-2); background: transparent; transition: background 0.12s ease;">
+  <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #e6e3df; color: #3a3530; box-shadow: inset 0 0 0 1px rgba(20,17,13,0.04);">
+    
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg>
+
+
+  </span>
+  <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; color: inherit;">Settings</span>
+</a>
+
+    <form method="post" action="/auth/logout" style="display: contents;">
+      <button type="submit" data-testid="logout-btn" title="Sign out"
+              style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 6px; border-radius: 10px; background: transparent; border: 0; color: var(--ink-3); cursor: pointer; width: 100%;">
+        <span style="color: inherit; display: flex;">
+
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+
+</span>
+        <span style="font-size: 10px; font-weight: 500;">Sign out</span>
+      </button>
+    </form>
+  </nav>
+</aside>
+
+  <div class="qw-app-main">
+    <div class="qw-app-topbar" style="height: 56px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--white); border-bottom: 1px solid var(--rule);">
+
+  <div style="display: flex; align-items: center; gap: 10px; font-size: 13.5px;">
+    
+      
+        <span style="color: var(--ink-3); font-weight: 400;">Visible</span>
+        <span style="color: var(--rule);">
+
+  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+
+</span>
+      
+        <span style="color: var(--ink); font-weight: 500;">Dashboard</span>
+        
+      
+    
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <button type="button" style="display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); width: 280px; color: var(--ink-3); font-size: 13px; cursor: pointer;">
+      
+
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+
+
+      <span style="flex: 1; text-align: left;">Find a doc, project, source…</span>
+      <span class="qw-mono" style="font-size: 11px; padding: 1px 5px; border: 1px solid var(--rule); border-radius: 4px;">⌘K</span>
+    </button>
+
+    <button type="button" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--rule); background: var(--white); display: flex; align-items: center; justify-content: center;">
+      
+
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 11.5c.5-1 1-2 1-4a3.5 3.5 0 1 1 7 0c0 2 .5 3 1 4h-9Z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0"/></svg>
+
+
+    </button>
+
+    
+    <div style="width: 34px; height: 34px; border-radius: 99px; background: linear-gradient(135deg, var(--accent), var(--accent-deep)); display: flex; align-items: center; justify-content: center; color: var(--paper); font-weight: 600; font-size: 13px;">VI</div>
+  </div>
+</div>
+
+    <div class="qw-app-content">
+      
+
+<div style="max-width: 880px; margin: 0 auto; padding: 72px 32px 48px; background: var(--white);">
+
+  
+  <div style="text-align: center; margin-bottom: 40px;">
+    <h1 data-testid="dashboard-title" style="font-size: 56px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.02; color: var(--ink);">
+      
+        Write anything.
+      
+    </h1>
+    <p style="margin-top: 16px; font-size: 18px; font-weight: 400; color: var(--ink-2); max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      
+        Add a source to ground generation in your real customer site.
+      
+    </p>
+  </div>
+
+  
+  <form method="post" action="/quick-generate" data-turbo="false"
+        style="border: 2px solid var(--ink); border-radius: 18px; padding: 4px; background: var(--white); box-shadow: 0 20px 48px -20px rgba(20,17,13,0.18), 0 2px 4px rgba(20,17,13,0.04);">
+    <div style="padding: 22px 24px 14px;">
+      <textarea name="prompt" data-testid="home-prompt" required autofocus
+                placeholder="Write a paragraph for a blog post about…"
+                rows="3"
+                style="width: 100%; border: 0; outline: none; resize: none; font-size: 17px; font-weight: 400; font-family: var(--font-sans); line-height: 1.55; color: var(--ink); background: transparent;"></textarea>
+    </div>
+
+    <div style="padding: 0 18px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+
+      
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        
+          <a href="/sources" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--ink-3); border: 1px dashed var(--rule); text-decoration: none;">
+            
+
+  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3 8h10"/></svg>
+
+ Add a source
+          </a>
+        
+
+        <select name="model" data-testid="home-model"
+                style="padding: 6px 10px; border-radius: 999px; border: 1px solid var(--rule); background: var(--white); font-size: 12px; color: var(--ink-2); font-family: var(--font-mono);">
+          <option value="google/gemini-2.5-flash">Gemini Flash</option>
+          <option value="openai/gpt-4o-mini">GPT-4o-mini</option>
+          <option value="openai/gpt-4o">GPT-4o</option>
+          <option value="mistralai/mistral-small-3.1-24b-instruct">Mistral Small</option>
+        </select>
+
+        
+        <input type="hidden" name="count" value="1" data-testid="home-count">
+        <input type="hidden" name="kind" value="blog" data-testid="home-kind">
+      </div>
+
+      
+      <button type="submit" data-testid="home-generate"
+              style="padding: 12px 22px; border-radius: 999px; font-size: 15px; font-weight: 600; gap: 8px; background: var(--ink); color: var(--white); border: 0; cursor: pointer; display: inline-flex; align-items: center; box-shadow: 0 4px 12px rgba(20,17,13,0.16); transition: transform 0.08s ease, box-shadow 0.12s ease;"
+              onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 16px rgba(20,17,13,0.24)';"
+              onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(20,17,13,0.16)';">
+        
+
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 4.5L14 7l-4.5 1.5L8 13l-1.5-4.5L2 7l4.5-1.5L8 1Z"/></svg>
+
+ Generate →
+      </button>
+    </div>
+  </form>
+
+  
+  <div style="margin-top: 40px;">
+    <div style="font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 14px; letter-spacing: 0.02em; text-transform: uppercase;">
+      Need a starting point? Try…
+    </div>
+    
+    
+
+
+<div data-controller="starter-picker">
+
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;">
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="hr"
+        data-action="click->starter-picker#show"
+        data-active="true"
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  HR
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="client"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Client
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="internal"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Internal
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="sales"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Sales
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="marketing"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Marketing
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="pm"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  PM
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="finance"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Finance
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="legal"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Legal
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="training"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Training
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="career"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Career
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="eng"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Engineering
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="support"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Support
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="product"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  Product
+</button>
+
+    
+<button type="button"
+        data-starter-picker-target="pill"
+        data-category="success"
+        data-action="click->starter-picker#show"
+        
+        style="padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.1s ease;">
+  CS
+</button>
+
+  </div>
+
+  
+
+  
+  <div data-starter-picker-target="group" data-category="hr"
+       data-controller="prompt-suggest"
+       style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a job description for a Senior Software Engineer in Bengaluru (hybrid). 5+ years experience, must-haves: Java, Spring Boot, AWS. Include responsibilities, qualifications, what success looks like in 6 months, and our values. ~350 words."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Job description</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Role + must-haves + location</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a formal offer letter for a candidate joining as Senior Engineer at a fixed CTC of ₹24 LPA. Include the CTC breakup (fixed + variable + RSU), joining bonus, notice period, and reporting manager. Warm, professional tone."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Offer letter</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">CTC breakup + bonus + notice</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a candidate rejection email after a final-round interview. Acknowledge their effort, give one specific reason (we are going with someone who has more experience in distributed systems), invite them to reapply in 12 months. ~90 words."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Polite rejection</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">After interview, with kindness</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write structured interview feedback notes for the hiring manager. Cover technical skills, problem-solving, communication, culture fit, and a hire / no-hire recommendation with a one-line rationale."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Interview feedback</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">For the hiring panel</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="client"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a weekly status update email to a US client. Sections: 1) What shipped this week, 2) In progress, 3) Blockers needing their input, 4) Next week's plan. Crisp, no fluff."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Weekly status</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">What shipped, what's blocked</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a scope-change request email — the client asked for a new feature mid-sprint. Explain the additional effort in hours, revised timeline impact, and cost. Frame it neutrally so they can decide without feeling pressured."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Scope change ask</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Estimate + cost + timeline</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write an apology email for missing a delivery deadline. Be honest about the cause without making excuses, share the revised date, and explain what we've changed in our process to prevent recurrence."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Missed deadline</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Honest apology + recovery plan</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a project kickoff email to all stakeholders. Cover scope, key milestones, who owns what, the weekly communication cadence, and how decisions get escalated."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Project kickoff</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Stakeholders, timeline, comms plan</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="internal"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a leave application for 5 days for my sister's wedding. Include who'll cover my work, status of ongoing items, and how to reach me for emergencies only."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Leave request</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">With handover note</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a reimbursement request email to finance for client travel: ₹38,400 in flights, ₹12,000 in hotels. List the bills attached, the project code, and request for processing in the next cycle."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Reimbursement</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Travel / meal / internet</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 1:1 meeting request to my manager. Topic: my next role and promotion path. Frame it as wanting clarity on expectations, not as a demand. Ask for 30 minutes."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">1:1 with manager</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">About career growth</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft an escalation email to my skip-level manager about a dependency that is delayed and blocking my team. Be factual, propose a path forward, copy my direct manager."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Escalate a blocker</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">To skip-level, factual</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="sales"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 90-word cold email to a US CTO at a 200-person SaaS company. We help offshore engineering teams ship 2x faster. Lead with a specific insight about their stack, end with a single soft CTA."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Cold outreach</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">First touch, not spammy</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a polite follow-up to a prospect who's gone quiet for 2 weeks. Reference our last call specifically, add one new piece of value (a relevant case study), ask if timing is wrong."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Follow-up nudge</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">After 2 weeks of silence</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a proposal summary email with three pricing tiers (Essentials, Growth, Enterprise). Show what's included in each, recommend the middle tier, mention the full PDF is attached."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Proposal summary</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Three tiers, easy yes</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 280-character LinkedIn connection request to a senior PM at a fintech. Mention one specific reason I want to connect (shared interest, mutual contact, recent post they made). No pitch."
+        data-prompt-suggest-kind-param="social"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">LinkedIn intro</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Connect request, no pitch</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="marketing"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 600-word LinkedIn post announcing our new product. Open with a customer pain story, explain how we solve it, end with a CTA to demo. Indian-English, warm, no buzzwords."
+        data-prompt-suggest-kind-param="social"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">LinkedIn post</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Product launch, story-led</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a 700-word case study. Structure: client's problem (with one quantified pain), our approach in 3 phases, measurable outcome with numbers, customer quote at the end."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Case study</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Problem → solution → outcome</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 150-word blog post intro for 'Why Indian fintechs are betting on AI agents.' Hook with a real example, define the problem clearly, promise what the rest of the post will cover."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Blog intro</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">150 words that earn the scroll</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write Google Ads copy for our HR SaaS. 3 headlines (max 30 chars each), 2 descriptions (max 90 chars each). Lead with the specific outcome — 'Hire 2x faster' — not generic features."
+        data-prompt-suggest-kind-param="ad"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Google Ads copy</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">3 headlines + 2 descriptions</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="pm"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a sprint retrospective summary. Three columns: What went well, What didn't, What we'll change next sprint. Three items per column, each with an owner."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Sprint retro</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">What worked, what didn't</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a RAID log entry for a new risk: dependency on a third-party API's uptime. Include description, impact rating (1–5), probability (%), mitigation plan, owner, and review date."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">RAID log entry</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">New risk this week</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a one-page project status report. RAG status with reason, milestones (done / on track / at risk), budget vs actual, top 3 risks, top 3 asks of leadership."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Status report</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">RAG snapshot for execs</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write my async standup update for today. Yesterday I shipped a code review and merged a small fix, today I'll start the email template integration, blocker is waiting on copy from marketing. Under 80 words."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Async standup</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Yesterday / today / blockers</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="finance"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a payment reminder email for invoice INV-2026-0142 which is 60 days overdue (₹4,80,000). Tone should be firm but professional — note this is the third reminder, mention the next step is account suspension."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Payment reminder</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Overdue invoice, firm tone</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a vendor onboarding email requesting GST certificate, PAN card, MSME registration (if applicable), cancelled cheque, and signed NDA. Set a 7-day deadline."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Vendor onboarding</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">GST, PAN, MSME, bank details</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a budget approval request to the CFO for ₹18 lakhs to expand the QA team by two people. Justify with expected ROI, alternatives considered (outsourcing), timeline, and what happens if we don't approve."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Budget approval</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">To CFO with justification</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a formal response to a GST clarification notice asking for explanation of input tax credit claimed in Q3 FY24-25. Reference the notice number, mention supporting documents attached, request closure of the notice."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">GST notice reply</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Formal response to tax dept</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="legal"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a short cover email for an NDA being shared with a prospect before a deep-dive demo. Explain why we need it signed, what's protected (both ways), turnaround expected (2 business days)."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">NDA cover note</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Before sharing a demo</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a No Objection Certificate (NOC) for an employee pursuing an executive MBA at IIM Bangalore alongside their role. State the company has no objection, list conditions (no conflict with work hours, no IP overlap), signed by HR."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">NOC for employee</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Parallel study or external work</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a confidentiality reminder email to a team that just got access to a client's production data. Cover what they can and can't do, how to flag concerns, consequences of breach. Firm but not threatening."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Confidentiality reminder</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Team handling client data</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a polite reply to a vendor asking for 100% advance payment when our standard terms are 30% advance, 70% on delivery. Hold the line, offer alternatives (escrow, milestones), keep the relationship warm."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Payment terms pushback</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Politely decline vendor ask</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="training"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a Standard Operating Procedure for a new joiner in Engineering. Day 1 (setup, intros), Week 1 (codebase tour), Week 2 (shadow a senior), Week 3 (first PR), Day 30 (own a small feature). With owners and what to learn at each step."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Onboarding SOP</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Day 1 to day 30</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a training session recap email. Cover what was taught, the 3 key takeaways, action items for attendees with deadlines, and where to find the recording and slides."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Training recap</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">After a session, action items</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a beginner FAQ for new joiners learning our Jira workflow. 8 questions a new person actually asks (not what we wish they'd ask). Plain English, an example for each."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Tool FAQ</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Beginner Q&A internal tool</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a knowledge transfer document for a team member exiting in 2 weeks. Sections: systems they owned, ongoing work and handover plan, key contacts, gotchas no one will tell you about, where things are documented."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">KT document</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Exiting member's handover</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="career"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 200-word LinkedIn post announcing my move from a backend engineer role at Razorpay to a senior engineer role at Stripe. Thank specific people, share one thing I learned, hint at what excites me about the new role. No humblebrag."
+        data-prompt-suggest-kind-param="social"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Job change post</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">LinkedIn, grateful + forward</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Rewrite this resume bullet to be quantified and impactful: 'Worked on the payments team.' Context: I was a Backend Engineer, owned the reconciliation pipeline, reduced failed transactions by 35%."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Resume bullet</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Quantified impact, action verb</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a short thank-you note after a 30-min informational coffee chat. Mention one specific thing they said that stuck, share what I'll do as a result, leave the door open for future chats."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Thank-you note</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">After an informational chat</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a referral request message to a former colleague who works at a target company. Be specific about the role I'm interested in (link), explain why I'm a fit in two lines, make it easy for them to say no."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Referral request</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">To a former colleague</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="eng"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a code review comment for a pull request that has unclear variable names, no tests, and doesn't follow our error-handling pattern. Be direct but kind. Lead with the most important issue, suggest specific improvements."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Code review</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Direct + kind feedback</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 600-word technical RFC proposing we migrate our notification queue from Redis to AWS SQS. Cover: problem, options considered, recommendation with trade-offs, migration plan, rollback strategy, open questions."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Technical RFC</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Problem → options → recommendation</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a one-pager design doc for adding webhooks to our REST API. Sections: motivation, design (data model + delivery semantics + retry policy), security considerations, open questions, alternatives considered."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Design doc</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">One-page system spec</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a blameless post-mortem for a production outage that lasted 47 minutes — the cause was a stale config in production. Cover timeline, customer impact, root cause analysis, action items with owners and dates."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Post-mortem</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Blameless incident review</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="support"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 90-word first-response template to a customer who reported their payment is stuck. Acknowledge the urgency, set expectations (we'll respond within 2 hours with a fix or status), ask for transaction ID and timestamp."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">First response</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Quick acknowledgement + expectations</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft an escalation reply to a customer who's frustrated their issue isn't resolved after 3 days. Apologize sincerely (no defensiveness), share specifically what we're doing now, give a concrete next-update time, offer a direct line."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Escalation reply</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">When customer is frustrated</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a polite email approving a partial refund of 30% for a customer who experienced 4 hours of downtime during a paid month. Explain the math, reference our SLA, offer service credit as an alternative, close warmly."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Refund / credit</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Partial refund with rationale</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a bug acknowledgement email — customer reported the export function fails for files >10MB. Confirm we've reproduced it, share the workaround (split files into 5MB chunks), give an ETA for the fix (next sprint)."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Bug acknowledgement</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Confirm + workaround + ETA</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="product"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 600-word PRD for adding bulk-import to our CRM. Sections: problem, target users, user stories (3), scope (in/out), success metrics, dependencies, open questions, rollout plan."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">PRD</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Product Requirements Doc</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a 200-word beta launch announcement to 50 invited customers. Explain what they're getting, what we want feedback on (3 specific things), where to send it, the timeline, the upgrade path."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Beta launch note</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">To 50 invited customers</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 400-word summary of 5 user interviews about our pricing page. Cover what we asked, the patterns we heard (3), surprising findings, quotes that hit, 3 recommended actions with owners."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">User interview summary</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">5 interviews → 3 actions</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a quarterly roadmap update for customers. Three sections: what shipped (3-4 items with impact), what's coming next quarter (top 3 with timelines), what we're investigating. Honest about timelines, no hype."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Roadmap update</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">What shipped / next / investigating</span>
+</button>
+
+  </div>
+
+  
+  <div data-starter-picker-target="group" data-category="success"
+       data-controller="prompt-suggest"
+       style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 180-word welcome email for a new enterprise customer. Cover the kick-off call (next steps), who's their dedicated CSM, where to get help, one quick-win they can try today, what success looks like in 30 days."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Onboarding email</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Welcome + first quick-win</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Draft a Quarterly Business Review document for a customer who pays ₹40 lakhs/year. Cover usage stats with the YoY trend, value delivered (with numbers), planned roadmap items relevant to them, an open ask for renewal discussion."
+        data-prompt-suggest-kind-param="blog"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">QBR doc</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">Quarterly Business Review</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Write a 250-word renewal pitch email to a customer whose contract expires in 60 days. Lead with measurable wins this year (3 metrics), share what's coming next that benefits them, propose a 30-min meeting."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Renewal pitch</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">60 days before expiry</span>
+</button>
+
+    
+<button type="button"
+        data-action="click->prompt-suggest#use"
+        data-prompt-suggest-prompt-param="Compose a churn-save email to a customer who said they're considering switching to a competitor. Acknowledge their concerns specifically (don't gaslight), offer a 1:1 with our founder, propose 2 concrete steps to address their issues, leave the door open."
+        data-prompt-suggest-kind-param="email"
+        style="padding: 16px 18px; text-align: left; background: var(--white); border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; gap: 5px; transition: border-color 0.12s ease, transform 0.08s ease;"
+        onmouseover="this.style.borderColor='var(--ink)';this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.borderColor='var(--rule)';this.style.transform='translateY(0)';">
+  <span style="font-size: 14.5px; font-weight: 700; color: var(--ink);">Churn-save email</span>
+  <span style="font-size: 12px; color: var(--ink-2); font-weight: 400;">They're talking to competitors</span>
+</button>
+
+  </div>
+
+</div>
+
+  </div>
+
+  
+  
+
+</div>
+
+
+    </div>
+  </div>
+</div>
+
+
+  
+  <div id="flash" aria-live="polite" style="position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 1000;"></div>
+
+  
+  <div data-controller="palette">
+    <div data-palette-target="overlay"
+         data-action="click->palette#backdropClick"
+         style="display: none; position: fixed; inset: 0; background: rgba(20,17,13,0.5); align-items: flex-start; justify-content: center; padding-top: 14vh; z-index: 1100;">
+      <div style="background: var(--white); border-radius: var(--radius-lg); width: 90%; max-width: 540px; box-shadow: 0 24px 64px rgba(0,0,0,0.25); padding: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule);">
+          <span style="color: var(--ink-3);">⌘K</span>
+          <input data-palette-target="input"
+                 data-action="input->palette#search keydown->palette#__keyForward"
+                 type="text" placeholder="Jump to anywhere…"
+                 style="flex: 1; border: 0; outline: none; background: transparent; font-size: 15px; font-family: var(--font-sans); color: var(--ink);">
+          <button type="button" data-action="click->palette#close" class="qw-mono" style="font-size: 11px; padding: 2px 8px; border: 1px solid var(--rule); border-radius: 4px; background: transparent; cursor: pointer; color: var(--ink-3);">ESC</button>
+        </div>
+        <div data-palette-target="list" style="padding: 6px; display: flex; flex-direction: column;"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
