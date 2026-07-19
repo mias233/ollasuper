@@ -1,0 +1,124 @@
+[workspace]
+
+[package]
+name = "copyai"
+version = "0.1.0"
+edition = "2021"
+publish = false
+default-run = "copyai-cli"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace.dependencies]
+loco-rs = { version = "0.16" }
+
+[dependencies]
+loco-rs = { workspace = true  }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
+tokio = { version = "1.45", default-features = false, features = [
+  "rt-multi-thread",
+  # Phase 33.2 · services::mcp_supervisor spawns MCP server children +
+  # talks JSON-RPC over their stdio. Needs process (Command/Child),
+  # io-util (AsyncBufReadExt/AsyncWriteExt), sync (mpsc/oneshot/RwLock/
+  # OnceCell — these were transitively present via loco-rs, but the
+  # explicit default-features=false made the resolver pick the minimal
+  # set), time (tokio::time::timeout on the request future), and macros
+  # (#[tokio::test] used by mcp_supervisor + tool_registry tests).
+  "process",
+  "io-util",
+  "sync",
+  "time",
+  "macros",
+] }
+async-trait = { version = "0.1" }
+axum = { version = "0.8", features = ["multipart"] }
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+regex = { version = "1.11" }
+migration = { path = "migration" }
+sea-orm = { version = "1.1", features = [
+  "sqlx-sqlite",
+  "sqlx-postgres",
+  "runtime-tokio-rustls",
+  "macros",
+] }
+chrono = { version = "0.4" }
+validator = { version = "0.20" }
+uuid = { version = "1.6", features = ["v4"] }
+include_dir = { version = "0.7" }
+axum-extra = { version = "0.10", features = ["cookie", "form"] }
+async-openai = { version = "0.40.2", features = ["chat-completion"] }
+pulldown-cmark = { version = "0.12", default-features = false, features = ["html"] }
+urlencoding = { version = "2.1" }
+base64 = { version = "0.22" }
+# async-stripe disabled in this build environment (LLVM OOM on 8GB Windows).
+# The real billing controller lives in billing.rs.real — restore it and put the
+# dep back when building on a host with >= 12GB RAM.
+# async-stripe = { version = "0.41.0", features = ["webhook-events", "checkout", "runtime-tokio-hyper"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "gzip"] }
+jsonwebtoken = { version = "9" }
+tera = { version = "1.20" }
+serde_yaml = { version = "0.9" }
+once_cell = { version = "1.19" }
+thiserror = { version = "1" }
+hmac = { version = "0.12" }
+sha2 = { version = "0.10" }
+# Phase 32.2 audit item 9: per-IP rate limit on /auth/* brute-forceable
+# routes. SmartIpKeyExtractor reads X-Forwarded-For (set by cloudflared
+# from the real client IP — we're behind CF Tunnel, so the socket IP is
+# always loopback). tower_governor 0.8 is the axum 0.8 compatible line
+# (0.5 had axum-core 0.4.5 / axum 0.7 and won't link against our router).
+tower_governor = { version = "0.8" }
+# Direct dep on `governor` so we can name NoOpMiddleware in the
+# GovernorLayer<K, M> type signature. tower_governor 0.8 pins governor
+# transitively but doesn't re-export the middleware types.
+governor = { version = "0.10" }
+# Phase 33.1 · Phase A.2 — services::credential_vault. ChaCha20-Poly1305 is
+# pure-Rust (no openssl/AES-NI hassles), single small dep, well-audited.
+# `rand 0.8` because chacha20poly1305 0.10 still imports its OsRng via the
+# 0.8 line; bumping to 0.9 here is a 4-crate fight not worth picking.
+chacha20poly1305 = { version = "0.10" }
+rand = { version = "0.8" }
+# Ship #3 (P1-B-7) · direct dep for `StreamExt::next` on reqwest's
+# bytes_stream — pulled transitively already by reqwest+axum, but the
+# trait needs to be in scope for `.next().await`.
+futures-util = { version = "0.3", default-features = false }
+
+[[bin]]
+name = "copyai-cli"
+path = "src/bin/main.rs"
+required-features = []
+
+# Phase B CI gate — validates config/evals/*.yaml. Used by
+# .github/workflows/eval-schema.yml on every PR.
+[[bin]]
+name = "run-evals"
+path = "src/bin/run_evals.rs"
+required-features = []
+
+[profile.dev]
+# async-stripe + async-openai have hundreds of generated structs; the LLVM
+# debug-info pass blows past Windows' default stack/heap with full debug info.
+# Drop to line tables only — keeps backtraces, halves debug-build memory.
+debug = "line-tables-only"
+
+[profile.dev.package.async-openai]
+debug = false
+opt-level = 0
+codegen-units = 256
+
+# Phase 32.1 perf hardening — applied on the VM's Linux release builds.
+# Held back: panic = "abort" — Loco/Axum can catch per-request panics via
+# unwinding; flipping to abort would crash the whole process on any panic
+# in a handler. Revisit after telemetry shows zero handler panics.
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+
+[dev-dependencies]
+loco-rs = { workspace = true, features = ["testing"] }
+serial_test = { version = "3.1.1" }
+rstest = { version = "0.25" }
+insta = { version = "1.34", features = ["redactions", "yaml", "filters"] }

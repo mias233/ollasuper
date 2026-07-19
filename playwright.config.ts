@@ -2,33 +2,24 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  // Serial so account creation in test 01 is visible to tests 02-09.
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  retries: 0,
+  reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
+    // Hotwire dashboard is server-rendered by Loco at :5150. No separate
+    // frontend dev server now (rsbuild + React were retired in Phase 6).
+    baseURL: process.env.QWRITER_APP ?? 'http://localhost:5150',
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure',
   },
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-  ],
-  webServer: [
-    {
-      command: 'cargo run start',
-      url: 'http://127.0.0.1:5150',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-    },
-    {
-      command: 'cd frontend && npm run dev',
-      url: 'http://localhost:3000',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-    }
   ],
 });
